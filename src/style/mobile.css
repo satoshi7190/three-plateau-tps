@@ -1,0 +1,114 @@
+/* モバイル */
+@media (max-width: 768px) {
+    /* スマホのスワイプリロード無効 */
+    /* スマホのタップのハイライト非表示 */
+    * {
+        overscroll-behavior-y: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    #operation-guide {
+        display: none;
+    }
+
+    #joystick-control {
+        display: block;
+        position: fixed;
+        z-index: 10;
+        width: 100%;
+        bottom: 40px;
+        pointer-events: none;
+        display: grid;
+        place-items: center;
+        transition: all 0.3s;
+    }
+    #joystick-control.hidden {
+        translate: 0 100px;
+        opacity: 0;
+        pointer-events: none;
+    }
+    .joystick-frame {
+        width: 130px;
+        height: 130px;
+        border-radius: 100rem;
+        border: 2px white solid;
+        position: relative;
+    }
+    .joystick-ball {
+        pointer-events: auto;
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 100rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) translateZ(0);
+        filter: drop-shadow(0 0 5px #24fff4);
+    }
+
+    .key-control > .key-item {
+        display: none;
+    }
+
+    #attribute .wrap {
+        animation: loop-slide 20s infinite linear, text-feed 20s infinite;
+        justify-content: center;
+    }
+
+    #attribute a {
+        pointer-events: none;
+    }
+
+    @keyframes loop-slide {
+        from {
+            transform: translateX(120%);
+        }
+        to {
+            transform: translateX(-120%);
+        }
+    }
+
+    @keyframes text-feed {
+        0% {
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+
+    /* メニューバー */
+    #menu-bar {
+        top: 10px;
+        right: 20px;
+    }
+    #menu-bar > button {
+        padding: 15px;
+    }
+    #menu-bar > button {
+        padding: 10px;
+    }
+    #menu-bar > button > svg {
+        width: 24px;
+        height: 24px;
+    }
+    #menu-bar > #help-button {
+        display: none;
+    }
+
+    #map-container {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        top: 10px;
+        left: 10px;
+        transition: none;
+    }
+}
