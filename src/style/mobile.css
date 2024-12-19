@@ -149,8 +149,10 @@
 
     /* メニューバー */
     #menu-bar {
-        top: 10px;
-        right: 20px;
+        inset: auto;
+        bottom: 50px;
+        right: 30px;
+        gap: 10px;
     }
     #menu-bar > button {
         padding: 15px;
@@ -159,10 +161,14 @@
         padding: 10px;
     }
     #menu-bar > button > svg {
-        width: 24px;
-        height: 24px;
+        /* width: 24px;
+        height: 24px; */
     }
     #menu-bar > #help-button {
+        display: none;
+    }
+
+    #menu-bar > #github-button {
         display: none;
     }
 
