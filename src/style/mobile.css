@@ -1,3 +1,40 @@
+/* タブレット*/
+
+@media (min-width: 769px) and (max-width: 1280px) {
+    #joystick-control {
+        display: block;
+        position: absolute;
+        z-index: 10;
+        width: 220px;
+        height: 220px;
+        bottom: 0;
+        pointer-events: none;
+        display: grid;
+        place-items: center;
+        transition: all 0.3s;
+    }
+
+    .joystick-frame {
+        width: 130px;
+        height: 130px;
+        border-radius: 100rem;
+        border: 2px white solid;
+    }
+    .joystick-ball {
+        pointer-events: auto;
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 100rem;
+        position: absolute;
+        filter: drop-shadow(0 0 5px #24fff4);
+    }
+
+    .key-control {
+        display: none;
+    }
+}
+
 /* モバイル */
 @media (max-width: 768px) {
     /* スマホのスワイプリロード無効 */
@@ -11,19 +48,23 @@
         display: none;
     }
 
+    .key-control {
+        display: none;
+    }
+
     #joystick-control {
         display: block;
-        position: fixed;
+        position: absolute;
         z-index: 10;
         width: 100%;
-        bottom: 40px;
+        height: 220px;
+        bottom: 0;
         pointer-events: none;
         display: grid;
         place-items: center;
         transition: all 0.3s;
     }
     #joystick-control.hidden {
-        translate: 0 100px;
         opacity: 0;
         pointer-events: none;
     }
@@ -32,7 +73,6 @@
         height: 130px;
         border-radius: 100rem;
         border: 2px white solid;
-        position: relative;
     }
     .joystick-ball {
         pointer-events: auto;
@@ -41,14 +81,7 @@
         background: white;
         border-radius: 100rem;
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) translateZ(0);
         filter: drop-shadow(0 0 5px #24fff4);
-    }
-
-    .key-control > .key-item {
-        display: none;
     }
 
     #attribute .wrap {

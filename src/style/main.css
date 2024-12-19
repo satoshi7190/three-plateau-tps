@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 
+:root {
+    --full-height: 100vh;
+    --full-width: 100vw;
+    --primary-color: #24fff4;
+    --secondary-color: #2b2b2b;
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -9,6 +16,7 @@ body {
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+    height: var(--full-height);
 }
 
 button {
@@ -22,17 +30,14 @@ button {
 
 /* three.js canvas */
 #three-canvas {
-    /* background-image: linear-gradient(#ffffff, #000000); */
     background-image: radial-gradient(#003d5e, #000000);
-
-    /* background: linear-gradient(0deg, rgb(0, 76, 255) 0%, rgba(0, 0, 0, 1) 100%); */
     width: 100vw;
     height: 100vh;
 }
 
 /* 出典表示 */
 #attribute {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     right: 0;
     padding: 0.5rem;
@@ -88,7 +93,7 @@ a:visited {
 
 /* キーコントロールボタン */
 .key-control {
-    position: fixed;
+    position: absolute;
     z-index: 10;
     bottom: 50px;
     left: 30px;
@@ -130,7 +135,7 @@ a:visited {
 
 /* 操作ガイド */
 #operation-guide {
-    position: fixed;
+    position: absolute;
     z-index: 10;
     bottom: 40px;
     right: 20px;
@@ -323,7 +328,7 @@ a:visited {
 
 /* メニューバー */
 #menu-bar {
-    position: fixed;
+    position: absolute;
     z-index: 10;
     top: 20px;
     right: 20px;
