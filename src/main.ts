@@ -21,7 +21,7 @@ import maplibregl from 'maplibre-gl';
 import { customLineMaterial, customSurfaceMaterial, characterMaterial, hitBoxMaterial, floorMaterial, underGroundMaterial, customSurfaceMaterial2 } from './world/material';
 import { store } from './store';
 import { ElementManager } from './ui/element';
-import { BloomEffect, EffectComposer, EffectPass, RenderPass, FXAAEffect } from 'postprocessing';
+// import { BloomEffect, EffectComposer, EffectPass, RenderPass, FXAAEffect } from 'postprocessing';
 import { checkLocalStorage } from './localStorage';
 
 // import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -104,14 +104,11 @@ const setPlayerControl = (val: boolean) => {
         orbitControls.minPolarAngle = 0;
     }
 };
-
 setPlayerControl(true);
 
-// ズーム Control
 const zoomControls = new TrackballControls(camera, canvas);
 zoomControls.noPan = true;
 zoomControls.noRotate = true;
-// zoomControls.noZoom = true;
 zoomControls.zoomSpeed = 0.2;
 
 // レンダラー
@@ -124,15 +121,15 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 // エフェクト
-const composer = new EffectComposer(renderer);
-const bloom = new BloomEffect({
-    intensity: 1.2, // ブルームの強度
-    luminanceThreshold: 0.8, // 明るさのしきい値 (threshold)
-    luminanceSmoothing: 0.3, // 明るさの平滑化
-});
-const fxaa = new FXAAEffect();
-composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new EffectPass(camera, bloom, fxaa));
+// const composer = new EffectComposer(renderer);
+// const bloom = new BloomEffect({
+//     intensity: 1.2, // ブルームの強度
+//     luminanceThreshold: 0.8, // 明るさのしきい値 (threshold)
+//     luminanceSmoothing: 0.3, // 明るさの平滑化
+// });
+// const fxaa = new FXAAEffect();
+// composer.addPass(new RenderPass(scene, camera));
+// composer.addPass(new EffectPass(camera, bloom, fxaa));
 
 // Raycasterの設定
 const raycaster = new THREE.Raycaster();
@@ -156,7 +153,8 @@ const onResize = () => {
     // カメラのアスペクト比を正す
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    // stats.update();
+
+    setFullHeight();
 };
 window.addEventListener('resize', onResize);
 
@@ -321,7 +319,7 @@ const animate = () => {
 
     uniforms.u_time.value = clock.getElapsedTime();
 
-    composer.render();
+    // composer.render();
 };
 animate();
 
@@ -515,3 +513,12 @@ map.on('mouseover', 'FloorSurface', () => {
 map.on('mouseleave', 'FloorSurface', () => {
     map.getCanvas().style.cursor = '';
 });
+
+// スマホブラウザのアドレスバーの高さを除いた画面の高さを取得
+const setFullHeight = () => {
+    const fullHeight = window.innerHeight;
+    const fullWidth = window.innerWidth;
+    document.documentElement.style.setProperty('--full-height', `${fullHeight}px`);
+    document.documentElement.style.setProperty('--full-width', `${fullWidth}px`);
+};
+setFullHeight;

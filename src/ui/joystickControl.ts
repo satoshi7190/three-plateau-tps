@@ -71,8 +71,7 @@ export class Joystick {
         const totalX = this.touchX + keyX;
         const totalY = this.touchY + keyY;
 
-        this.joystickBall.style.left = `calc(50% + ${totalX}px)`;
-        this.joystickBall.style.top = `calc(50% + ${totalY}px)`;
+        this.joystickBall.style.translate = `${totalX}px ${totalY}px`;
     }
 
     // ジョイスティックの方向を取得
