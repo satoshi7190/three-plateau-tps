@@ -17,6 +17,7 @@ body {
     font-weight: 400;
     font-style: normal;
     height: var(--full-height);
+    width: var(--full-width);
 }
 
 button {

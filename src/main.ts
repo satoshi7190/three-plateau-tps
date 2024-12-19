@@ -517,6 +517,8 @@ map.on('mouseleave', 'FloorSurface', () => {
 // スマホブラウザのアドレスバーの高さを除いた画面の高さを取得
 const setFullHeight = () => {
     const fullHeight = window.innerHeight;
+    const fullWidth = window.innerWidth;
     document.documentElement.style.setProperty('--full-height', `${fullHeight}px`);
+    document.documentElement.style.setProperty('--full-width', `${fullWidth}px`);
 };
 setFullHeight;
