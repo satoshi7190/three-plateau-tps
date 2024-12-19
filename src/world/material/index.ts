@@ -44,11 +44,9 @@ export const customLineMaterial = new THREE.ShaderMaterial({
     vertexShader: vertexLineShader,
     fragmentShader: fragmentLineShader,
     glslVersion: THREE.GLSL3,
-    // depthTest: false,
-    // depthWrite: false,
 });
 
-// 見えない壁マテリアル
+// 衝突判定マテリアル
 export const hitBoxMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
     visible: false,
@@ -60,6 +58,7 @@ export const floorMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
     color: new THREE.Color('rgb(0, 17, 23)'),
     opacity: 0.7,
+    side: THREE.DoubleSide,
 });
 
 // キャラクターのマテリアル

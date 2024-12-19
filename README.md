@@ -29,3 +29,12 @@ This project utilizes the following datasets:
 - [地理院ベクトル 道路中心線](https://github.com/gsi-cyberjapan/experimental_rdcl?tab=readme-ov-file)
 
 - [歩行空間ネットワークデータ（新宿駅周辺）（2018 年 3 月版適用）R1 整備\_歩行空間ネットワークデータ](https://www.hokoukukan.go.jp/metadata/resource/251)
+
+## Development Setup
+
+To run this project locally, follow these steps:
+
+```sh
+npm install
+npm run dev
+```

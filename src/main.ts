@@ -104,14 +104,11 @@ const setPlayerControl = (val: boolean) => {
         orbitControls.minPolarAngle = 0;
     }
 };
-
 setPlayerControl(true);
 
-// ズーム Control
 const zoomControls = new TrackballControls(camera, canvas);
 zoomControls.noPan = true;
 zoomControls.noRotate = true;
-// zoomControls.noZoom = true;
 zoomControls.zoomSpeed = 0.2;
 
 // レンダラー
