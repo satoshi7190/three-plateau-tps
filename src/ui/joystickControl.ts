@@ -67,7 +67,6 @@ export class JoystickControl {
 
     // ジョイスティックの位置を更新
     private updateJoystickBall(): void {
-        this.updateJoystickCenter();
         const keyX = this.keyManager.isKeyPressed('a') ? -this.joystickLimit : this.keyManager.isKeyPressed('d') ? this.joystickLimit : 0;
         const keyY = this.keyManager.isKeyPressed('w') ? -this.joystickLimit : this.keyManager.isKeyPressed('s') ? this.joystickLimit : 0;
 
