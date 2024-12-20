@@ -51,7 +51,7 @@
         top: 50%;
         left: 50%;
         --angle: calc(360deg / 4 * var(--index));
-        --d: 80px;
+        --d: 50px;
         --x: calc(cos(var(--angle)) * var(--d));
         --y: calc(sin(var(--angle)) * var(--d));
         translate: calc(var(--x) - 50%) calc(var(--y) - 50%);
@@ -59,8 +59,8 @@
         user-select: none;
         pointer-events: none;
         background: #ffffff;
-        height: calc(tan(60deg) * 15px / 2);
-        width: 30px;
+        height: calc(tan(60deg) * 10px / 2);
+        width: 19px;
         clip-path: polygon(50% 0, 100% 100%, 0 100%);
     }
 }
@@ -92,6 +92,10 @@
         user-select: none;
         pointer-events: none;
         color: #ffffff;
+    }
+
+    #joystick-control > .triangle {
+        display: none;
     }
 }
 

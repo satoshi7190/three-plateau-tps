@@ -68,8 +68,17 @@ export class Joystick {
         const keyX = this.keyManager.isKeyPressed('a') ? -this.joystickLimit : this.keyManager.isKeyPressed('d') ? this.joystickLimit : 0;
         const keyY = this.keyManager.isKeyPressed('w') ? -this.joystickLimit : this.keyManager.isKeyPressed('s') ? this.joystickLimit : 0;
 
-        const totalX = this.touchX + keyX;
-        const totalY = this.touchY + keyY;
+        // タッチとキー入力を合算
+        let totalX = this.touchX + keyX;
+        let totalY = this.touchY + keyY;
+
+        // 円の範囲内に制限
+        const distance = Math.sqrt(totalX * totalX + totalY * totalY);
+        if (distance > this.joystickLimit) {
+            const angle = Math.atan2(totalY, totalX);
+            totalX = Math.cos(angle) * this.joystickLimit;
+            totalY = Math.sin(angle) * this.joystickLimit;
+        }
 
         this.joystickBall.style.translate = `${totalX}px ${totalY}px`;
     }
