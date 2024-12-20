@@ -26,7 +26,6 @@
         "jismesh-js": "^0.2.0",
         "lodash.throttle": "^4.1.1",
         "maplibre-gl": "^4.7.1",
-        "postprocessing": "^6.36.4",
         "proj4": "^2.15.0",
         "three": "^0.170.0",
         "three-mesh-bvh": "^0.8.3"

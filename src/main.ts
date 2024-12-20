@@ -5,9 +5,9 @@ import './style/mobile.css';
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { CharacterControls } from './ui/characterControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Joystick } from './ui/joystickControl';
+import { TPSControls } from './ui/tpsControls';
 
 import { SCENE_CENTER_COORDS, INITIAL_LNG_LAT, INITIAL_MODEL_ROTATION } from './constants';
 import { map, setMarker } from './map';
@@ -21,30 +21,7 @@ import maplibregl from 'maplibre-gl';
 import { customLineMaterial, customSurfaceMaterial, characterMaterial, hitBoxMaterial, floorMaterial, underGroundMaterial, customSurfaceMaterial2 } from './world/material';
 import { store } from './store';
 import { ElementManager } from './ui/element';
-// import { BloomEffect, EffectComposer, EffectPass, RenderPass, FXAAEffect } from 'postprocessing';
 import { checkLocalStorage } from './localStorage';
-
-// import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-// NOTE: debug
-// const gui = new GUI();
-// gui.close();
-// for (const key of Object.keys(uniforms) as Array<keyof Uniforms>) {
-//     const uniform = uniforms[key];
-
-//     // 値の型に応じて適切な UI を設定
-//     if (typeof uniform.value === 'number') {
-//         gui.add(uniform, 'value', -1000, 1000).name(key);
-//     } else if (typeof uniform.value === 'boolean') {
-//         gui.add(uniform, 'value').name(key);
-//     } else if (uniform.value instanceof THREE.Color) {
-//         gui.addColor(uniform, 'value').name(key);
-//     } else if (uniform.value instanceof THREE.Vector3) {
-//         const folder = gui.addFolder(key as string);
-//         folder.add(uniform.value, 'x', -1000, 1000).name('x');
-//         folder.add(uniform.value, 'y', -1000, 1000).name('y');
-//         folder.add(uniform.value, 'z', -1000, 1000).name('z');
-//     }
-// }
 
 loadingStart();
 
@@ -120,25 +97,14 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// エフェクト
-// const composer = new EffectComposer(renderer);
-// const bloom = new BloomEffect({
-//     intensity: 1.2, // ブルームの強度
-//     luminanceThreshold: 0.8, // 明るさのしきい値 (threshold)
-//     luminanceSmoothing: 0.3, // 明るさの平滑化
-// });
-// const fxaa = new FXAAEffect();
-// composer.addPass(new RenderPass(scene, camera));
-// composer.addPass(new EffectPass(camera, bloom, fxaa));
-
-// Raycasterの設定
+// レイキャスト
 const raycaster = new THREE.Raycaster();
 
 // 下向きベクトル
 const downDirection = new THREE.Vector3(0, -1, 0);
 
 // モデルの読み込みとキャラクターコントロールの設定
-let characterControls: CharacterControls;
+let tpsControls: TPSControls;
 
 // 画面リサイズ時にキャンバスもリサイズ
 const onResize = () => {
@@ -272,8 +238,8 @@ const addModel = (url: string) => {
             animationsMap.set(a.name, mixer.clipAction(a));
         });
 
-        characterControls = new CharacterControls(model, mixer, animationsMap, orbitControls, zoomControls, camera, 'agree');
-        characterControls.update;
+        tpsControls = new TPSControls(model, mixer, animationsMap, orbitControls, zoomControls, camera, 'agree');
+        tpsControls.update;
         loadingEnd().then(() => {
             elManager.get('keyControl')?.classList.remove('hidden');
             elManager.get('mapContainer')?.classList.remove('hidden');
@@ -300,8 +266,8 @@ const animate = () => {
     zoomControls.target.set(target.x, target.y, target.z);
 
     let mixerUpdateDelta = clock.getDelta();
-    if (characterControls && !store.get('isFarView') && !store.get('showMapViewer')) {
-        const characterPosition = characterControls.getPosition();
+    if (tpsControls && !store.get('isFarView') && !store.get('showMapViewer')) {
+        const characterPosition = tpsControls.getPosition();
         const rayPosition = characterPosition.clone();
         rayPosition.y += 1.5;
         const hitBox = objs.HitBox;
@@ -309,7 +275,7 @@ const animate = () => {
 
         const joystickDirection = joystick.getDirection();
         if (ground && hitBox) {
-            characterControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
+            tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
         }
     }
 
@@ -318,8 +284,6 @@ const animate = () => {
     renderer.render(scene, camera);
 
     uniforms.u_time.value = clock.getElapsedTime();
-
-    // composer.render();
 };
 animate();
 
@@ -334,12 +298,12 @@ export const setPotison = (x: number, z: number) => {
     if (intersects.length > 0) {
         const y = intersects[0].point.y;
 
-        characterControls.setModelPosition(x, y, z);
+        tpsControls.setModelPosition(x, y, z);
     }
 
     const joystickDirection = joystick.getDirection();
-    characterControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
-    const angle = characterControls.getModelRotationAngle();
+    tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
+    const angle = tpsControls.getModelRotationAngle();
     setMarker(x, z, angle);
 };
 

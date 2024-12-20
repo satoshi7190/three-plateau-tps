@@ -7,29 +7,28 @@ const wallRay = new THREE.Raycaster();
 const groundRay = new THREE.Raycaster();
 // 下向きベクトル
 const downDirection = new THREE.Vector3(0, -1, 0);
-export class CharacterControls {
+export class TPSControls {
     model: THREE.Group;
     mixer: THREE.AnimationMixer;
-    animationsMap: Map<string, THREE.AnimationAction> = new Map(); // Walk, Run, Idle
+    animationsMap: Map<string, THREE.AnimationAction> = new Map(); // run, agree
     orbitControl: OrbitControls;
     zoomControls: TrackballControls;
     camera: THREE.PerspectiveCamera;
     y: number = 100;
-    isZooming: boolean = false;
 
-    // state
+    // 状態
     toggleRun: boolean = true;
     currentAction: string;
 
-    // temporary data
+    // 一時的なデータ
     walkDirection = new THREE.Vector3();
     rotateAngle = new THREE.Vector3(0, 1, 0);
     rotateQuarternion: THREE.Quaternion = new THREE.Quaternion();
     cameraTarget = new THREE.Vector3();
 
-    // constants
-    fadeDuration: number = 0.2;
-    runVelocity = 7;
+    // 定数
+    fadeDuration: number = 0.2; // フェード時間
+    runVelocity: number = 7; // 速度
 
     constructor(
         model: THREE.Group,
@@ -52,15 +51,7 @@ export class CharacterControls {
         this.orbitControl = orbitControl;
         this.zoomControls = zoomControls;
         this.camera = camera;
-        this.updateCameraTarget();
-        // ズーム操作時のフラグ設定
-        this.orbitControl.addEventListener('start', () => {
-            this.isZooming = true; // ズーム開始
-        });
-
-        this.orbitControl.addEventListener('end', () => {
-            this.isZooming = false; // ズーム終了
-        });
+        this.updateTarget();
 
         // ホイールイベントの監視 (カメラ位置が変更されたとき)
         this.orbitControl.addEventListener('change', () => {
@@ -68,6 +59,7 @@ export class CharacterControls {
         });
     }
 
+    // `Run`アニメーション切り替え
     public switchRunToggle() {
         this.toggleRun = !this.toggleRun;
     }
@@ -76,7 +68,7 @@ export class CharacterControls {
         return this.model.position;
     }
 
-    // 新しいメソッド: 衝突判定
+    // 衝突判定
     public checkCollision(mesh: THREE.Mesh, distance: number): boolean {
         // 現在のモデルの位置を取得
         const origin = this.model.position.clone();
@@ -114,12 +106,14 @@ export class CharacterControls {
         return (angleDegrees + 360) % 360;
     }
 
+    // キャラクターの更新処理
     public update(delta: number, joystickDirection: { x: number; y: number }, groundMesh: THREE.Mesh, collisionMesh: THREE.Mesh) {
         const directionPressed = joystickDirection.x !== 0 || joystickDirection.y !== 0;
 
         const characterPosition = this.getPosition();
         const rayPosition = characterPosition.clone();
 
+        // レイの位置を少し上にずらす
         rayPosition.y += 1.5;
 
         // 下方向のレイを作成
@@ -187,7 +181,7 @@ export class CharacterControls {
             this.model.position.y = y;
 
             // カメラターゲット更新
-            this.updateCameraTarget();
+            this.updateTarget();
 
             // モデルの現在の回転角度を取得してマーカーを設定
             const currentAngle = this.getModelRotationAngle();
@@ -198,7 +192,8 @@ export class CharacterControls {
         }
     }
 
-    private updateCameraTarget() {
+    // カメラ、コントロールのターゲットの更新
+    private updateTarget() {
         // 現在のカメラ位置とターゲットの差分を計算
         const cameraOffset = new THREE.Vector3().subVectors(this.camera.position, this.orbitControl.target);
 
@@ -225,75 +220,10 @@ export class CharacterControls {
         this.camera.updateProjectionMatrix();
     }
 
+    // モデルの位置を設定するメソッド
     public setModelPosition(x: number, y: number, z: number) {
         this.model.position.set(x, y, z);
 
-        this.updateCameraTarget();
+        this.updateTarget();
     }
-
-    // private updateCameraTargetAnime(moveX: number, moveZ: number) {
-    //     // 現在のカメラ位置とターゲットの差分を計算
-    //     const cameraOffset = new THREE.Vector3().subVectors(this.camera.position, this.orbitControl.target);
-
-    //     // モデルの現在位置を取得
-    //     const modelY = this.model.position.y;
-
-    //     // 新しいターゲット位置を計算
-    //     this.cameraTarget.set(
-    //         this.model.position.x + moveX,
-    //         modelY + 1, // 必要ならオフセットを調整
-    //         this.model.position.z + moveZ,
-    //     );
-
-    //     // 新しいカメラ位置を計算
-    //     const newCameraPosition = this.cameraTarget.clone().add(cameraOffset);
-
-    //     // カメラとターゲットのアニメーション
-    //     gsap.to(this.camera.position, {
-    //         x: newCameraPosition.x,
-    //         y: newCameraPosition.y,
-    //         z: newCameraPosition.z,
-    //         duration: 1.5,
-    //         // ease: 'power1.inOut',
-    //         onUpdate: () => {
-    //             // コントロールのターゲットもアニメーション中に更新
-    //             this.orbitControl.target.lerp(this.cameraTarget, 0.1);
-    //             this.zoomControls.target.lerp(this.cameraTarget, 0.1);
-    //             this.orbitControl.update();
-    //             this.zoomControls.update();
-    //         },
-    //         onComplete: () => {
-    //             // 完了時にカメラの位置を最終値に更新
-    //             this.orbitControl.target.copy(this.cameraTarget);
-    //             this.zoomControls.target.copy(this.cameraTarget);
-    //             this.orbitControl.update();
-    //             this.zoomControls.update();
-    //             this.camera.updateProjectionMatrix();
-    //         },
-    //     });
-    // }
-
-    // private setCameraFocus(obj: THREE.Object3D) {
-    //     const box = new THREE.Box3().setFromObject(obj);
-    //     const center = box.getCenter(new THREE.Vector3());
-
-    //     const size = new THREE.Vector3();
-    //     box.getSize(size); // バウンディングボックスのサイズを取得
-
-    //     const offset = 0.5; // カメラとオブジェクトの距離のオフセット
-
-    //     // カメラの視野角に基づき、オブジェクトを完全に視界に収めるための距離を計算
-    //     const maxSize = Math.max(size.x, size.y, size.z);
-    //     const fitHeightDistance = maxSize / (2 * Math.atan((Math.PI * this.camera.fov) / 360));
-    //     const fitWidthDistance = fitHeightDistance / this.camera.aspect;
-    //     const distance = offset * Math.max(fitHeightDistance, fitWidthDistance);
-
-    //     // カメラの位置を更新
-    //     const direction = new THREE.Vector3().subVectors(this.camera.position, center).normalize().multiplyScalar(distance);
-    //     this.camera.position.copy(center).add(direction);
-
-    //     // カメラがオブジェクトの中心を向くように調整
-    //     this.camera.lookAt(center);
-    //     this.camera.updateProjectionMatrix();
-    // }
 }
