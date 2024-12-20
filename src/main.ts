@@ -37,6 +37,7 @@ const elManager = ElementManager.getInstance({
     joystickControl: '#joystick-control',
     operationGuide: '#operation-guide',
     guideCloseButton: '#guide-close-button',
+    fullscreenButton: '#fullscreen-button',
 });
 
 // BVHの高速化されたレイキャストを有効にする
@@ -407,6 +408,10 @@ elManager.get('guideCloseButton')?.addEventListener('click', () => {
     store.set('showOperationGuide', false);
 });
 
+elManager.get('fullscreenButton')?.addEventListener('click', () => {
+    store.set('isFullScreen', !store.get('isFullScreen'));
+});
+
 // カメラの切り替え
 store.subscribe('isFarView', (value) => {
     if (value) {
@@ -442,6 +447,15 @@ store.subscribe('showMapViewer', (value) => {
         elManager.get('mapCloseButton')?.classList.add('hidden');
     }
     if (popup) popup.remove();
+});
+
+// フルスクリーン
+store.subscribe('isFullScreen', (value) => {
+    if (value) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
 });
 
 map.on('click', 'FloorSurface', (e) => {

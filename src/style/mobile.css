@@ -7,6 +7,15 @@
         -webkit-tap-highlight-color: transparent;
     }
 
+    #map-container {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        top: 10px;
+        left: 10px;
+        transition: none;
+    }
+
     #operation-guide {
         display: none;
     }
@@ -63,6 +72,10 @@
         width: 19px;
         clip-path: polygon(50% 0, 100% 100%, 0 100%);
     }
+
+    #menu-bar > #help-button {
+        display: none;
+    }
 }
 
 /* タブレット*/
@@ -77,7 +90,6 @@
         pointer-events: none;
         display: grid;
         place-items: center;
-        transition: all 0.3s;
     }
 
     #joystick-control > .key-item {
@@ -111,7 +123,6 @@
         pointer-events: none;
         display: grid;
         place-items: center;
-        transition: all 0.3s;
     }
 
     #joystick-control > .key-item {
@@ -168,20 +179,19 @@
         /* width: 24px;
         height: 24px; */
     }
-    #menu-bar > #help-button {
+
+    #menu-bar > #github-button {
+        display: none;
+    }
+}
+
+/* スマホ横 */
+@media (max-height: 300px) {
+    #map-container {
         display: none;
     }
 
     #menu-bar > #github-button {
         display: none;
-    }
-
-    #map-container {
-        width: 100px;
-        height: 100px;
-        border-radius: 10px;
-        top: 10px;
-        left: 10px;
-        transition: none;
     }
 }
