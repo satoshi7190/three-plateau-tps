@@ -18,6 +18,8 @@ You can control the character using the arrow keys or the W, A, S, and D keys to
 
 On mobile devices, use the on-screen joystick UI to move the character and touch and drag on the screen to adjust the camera view.
 
+![alt text](image.gif)
+
 ## Data Sources
 
 This project utilizes the following datasets:
