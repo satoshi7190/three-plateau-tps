@@ -1,7 +1,6 @@
 import { uniforms } from './world/material/uniforms';
 import { parseHash, mapPotisonToWorldPotison } from './utils';
-import './style/main.css';
-import './style/mobile.css';
+import './main.css';
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -10,34 +9,11 @@ import { Joystick } from './ui/joystickControl';
 import { TPSControls } from './ui/tpsControls';
 
 import { SCENE_CENTER_COORDS, INITIAL_LNG_LAT, INITIAL_MODEL_ROTATION } from './constants';
-import { map, setMarker } from './map';
 import { FGB3DLoader } from './world/plateauGeometryLoader';
 import { FGB2DLineLoader } from './world/lineGeometryLoader';
 import type { FGB2DLineOption } from './world/lineGeometryLoader';
-import { loadingEnd, loadingStart } from './ui/loading';
 import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
-import gsap from 'gsap';
-import maplibregl from 'maplibre-gl';
 import { customLineMaterial, customSurfaceMaterial, characterMaterial, hitBoxMaterial, floorMaterial, underGroundMaterial, customSurfaceMaterial2 } from './world/material';
-import { store } from './store';
-import { ElementManager } from './ui/element';
-import { checkLocalStorage } from './localStorage';
-
-loadingStart();
-
-// 要素
-const elManager = ElementManager.getInstance({
-    mapContainer: '#map-container',
-    mapOpenButton: '#map-open-button',
-    mapCloseButton: '#map-close-button',
-    viewButton: '#view-button',
-    helpButton: '#help-button',
-    githubButton: '#github-button',
-    keyControl: '#key-control',
-    joystickControl: '#joystick-control',
-    operationGuide: '#operation-guide',
-    guideCloseButton: '#guide-close-button',
-});
 
 // BVHの高速化されたレイキャストを有効にする
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
@@ -240,15 +216,6 @@ const addModel = (url: string) => {
 
         tpsControls = new TPSControls(model, mixer, animationsMap, orbitControls, zoomControls, camera, 'agree');
         tpsControls.update;
-        loadingEnd().then(() => {
-            elManager.get('keyControl')?.classList.remove('hidden');
-            elManager.get('mapContainer')?.classList.remove('hidden');
-            elManager.get('joystickControl')?.classList.remove('hidden');
-
-            if (checkLocalStorage('userData')) {
-                store.set('showOperationGuide', true);
-            }
-        });
     });
 };
 
@@ -266,7 +233,7 @@ const animate = () => {
     zoomControls.target.set(target.x, target.y, target.z);
 
     let mixerUpdateDelta = clock.getDelta();
-    if (tpsControls && !store.get('isFarView') && !store.get('showMapViewer')) {
+    if (tpsControls) {
         const characterPosition = tpsControls.getPosition();
         const rayPosition = characterPosition.clone();
         rayPosition.y += 1.5;
@@ -306,169 +273,6 @@ export const setPotison = (x: number, z: number) => {
     const angle = tpsControls.getModelRotationAngle();
     setMarker(x, z, angle);
 };
-
-// カメラの近距離と遠距離の設定
-const closeView = { position: camera.position.clone(), lookAt: { x: 0, y: 0, z: 0 } };
-const farView = { position: { x: 300, y: 200, z: 100 }, lookAt: { x: 0, y: 0, z: 0 } };
-
-// ビューを切り替える関数
-const toggleView = (val: boolean) => {
-    elManager.get('keyControl')?.classList.toggle('hidden');
-    elManager.get('mapContainer')?.classList.toggle('hidden');
-    elManager.get('joystickControl')?.classList.toggle('hidden');
-    if (val) {
-        setPlayerControl(false);
-        closeView.position = camera.position.clone();
-
-        const target = orbitControls.target;
-        closeView.lookAt = { x: target.x, y: target.y, z: target.z };
-    } else {
-        farView.position = camera.position.clone();
-        const target = orbitControls.target;
-        farView.lookAt = { x: target.x, y: target.y, z: target.z };
-    }
-
-    const targetView = val ? farView : closeView;
-
-    // カメラ位置のアニメーション
-    store.set('isCameraAnimating', true);
-    const cameraPositionAnim = gsap.to(camera.position, {
-        x: targetView.position.x,
-        y: targetView.position.y,
-        z: targetView.position.z,
-        duration: 1.0,
-        ease: 'power1',
-        onUpdate: () => {
-            camera.lookAt(targetView.lookAt.x, targetView.lookAt.y, targetView.lookAt.z);
-        },
-    });
-
-    // ターゲットのアニメーション
-    const targetAnim = gsap.to(orbitControls.target, {
-        x: targetView.lookAt.x,
-        y: targetView.lookAt.y,
-        z: targetView.lookAt.z,
-        duration: 1.0,
-        ease: 'power1',
-        onUpdate: () => {
-            camera.lookAt(orbitControls.target.x, orbitControls.target.y, orbitControls.target.z);
-        },
-    });
-
-    // `camera.fov` のスムーズなアニメーション
-    const fovAnim = gsap.to(camera, {
-        fov: val ? 45 : 75, // 目標視野角
-        duration: 1.0,
-        ease: 'power1',
-        onUpdate: () => {
-            camera.updateProjectionMatrix(); // 投影行列の更新が必須
-        },
-    });
-
-    // すべてのアニメーションの完了を待つ
-    gsap.timeline({
-        onComplete: () => {
-            if (!val) {
-                setPlayerControl(true);
-            }
-            store.set('isCameraAnimating', false);
-        },
-    })
-        .add(cameraPositionAnim)
-        .add(targetAnim, '-=1.0')
-        .add(fovAnim, '-=1.0');
-};
-
-let popup: maplibregl.Popup;
-
-// ボタンクリックでビュー切り替え
-elManager.get('viewButton')?.addEventListener('click', () => {
-    if (store.get('isCameraAnimating')) return;
-    store.set('isFarView', !store.get('isFarView'));
-});
-
-elManager.get('helpButton')?.addEventListener('click', () => {
-    store.set('showOperationGuide', !store.get('showOperationGuide'));
-});
-
-elManager.get('mapOpenButton')?.addEventListener('click', () => {
-    store.set('showMapViewer', true);
-});
-
-elManager.get('mapCloseButton')?.addEventListener('click', () => {
-    store.set('showMapViewer', false);
-});
-
-elManager.get('githubButton')?.addEventListener('click', () => {
-    window.open('https://github.com/satoshi7190/three-plateau-tps', '_blank', 'noopener,noreferrer');
-});
-
-elManager.get('guideCloseButton')?.addEventListener('click', () => {
-    store.set('showOperationGuide', false);
-});
-
-// カメラの切り替え
-store.subscribe('isFarView', (value) => {
-    if (value) {
-        elManager.get('viewButton')?.classList.add('far-view');
-        elManager.get('viewButton')?.classList.remove('player-view');
-        elManager.get('operationGuide')?.classList.add('far-view');
-        elManager.get('operationGuide')?.classList.remove('player-view');
-    } else {
-        elManager.get('viewButton')?.classList.add('player-view');
-        elManager.get('viewButton')?.classList.remove('far-view');
-        elManager.get('operationGuide')?.classList.add('player-view');
-        elManager.get('operationGuide')?.classList.remove('far-view');
-    }
-    toggleView(value);
-});
-
-// 操作説明の表示切り替え
-store.subscribe('showOperationGuide', (value) => {
-    if (value) {
-        elManager.get('operationGuide')?.classList.remove('hidden');
-    } else {
-        elManager.get('operationGuide')?.classList.add('hidden');
-    }
-});
-
-// 地図ビューアーの表示切り替え
-store.subscribe('showMapViewer', (value) => {
-    if (value) {
-        elManager.get('mapContainer')?.classList.add('active');
-        elManager.get('mapCloseButton')?.classList.remove('hidden');
-    } else {
-        elManager.get('mapContainer')?.classList.remove('active');
-        elManager.get('mapCloseButton')?.classList.add('hidden');
-    }
-    if (popup) popup.remove();
-});
-
-map.on('click', 'FloorSurface', (e) => {
-    if (!store.get('showMapViewer')) return;
-
-    const div = document.createElement('div');
-    const button = document.createElement('button');
-    button.className = 'popup-button';
-    button.textContent = 'Move to this location';
-    div.appendChild(button);
-
-    popup = new maplibregl.Popup({
-        closeButton: false,
-        anchor: 'bottom',
-    })
-        .setLngLat(e.lngLat)
-        .setDOMContent(div)
-        .addTo(map);
-
-    button.onclick = async () => {
-        const vec2 = mapPotisonToWorldPotison(e.lngLat.lng, e.lngLat.lat);
-
-        setPotison(vec2.x, vec2.z);
-        popup.remove();
-        store.set('showMapViewer', false);
-    };
-});
 
 map.on('mouseover', 'FloorSurface', () => {
     map.getCanvas().style.cursor = 'pointer';

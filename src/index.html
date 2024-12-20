@@ -14,30 +14,15 @@
         <meta property="og:description" content="A TPS-style 3D map of Shinjuku Station's underground mall, built with Three.js and PLATEAU data." />
         <meta name="twitter:card" content="summary" />
     </head>
-    <style>
-        /* ローディング */
-        #loading {
-            z-index: 9999;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgb(52, 52, 52);
-        }
-    </style>
     <body>
         <canvas id="three-canvas"></canvas>
-        <div id="key-control" class="key-control hidden">
+        <div id="key-control" class="key-control">
             <button id="key-s" class="key-item" style="--index: 1"><span>S</span></button>
             <button id="key-a" class="key-item" style="--index: 2"><span>A</span></button>
             <button id="key-w" class="key-item" style="--index: 3"><span>W</span></button>
             <button id="key-d" class="key-item" style="--index: 4"><span>D</span></button>
         </div>
-        <div id="joystick-control" class="joystick-control hidden">
+        <div id="joystick-control" class="joystick-control">
             <div id="joystick-frame" class="joystick-frame"></div>
             <div id="joystick-ball" class="joystick-ball">
                 <div class="joystick-ball-inner"></div>
@@ -50,137 +35,7 @@
             <button class="key-item" style="--index: 2"><span>A</span></button>
             <button class="key-item" style="--index: 3"><span>W</span></button>
             <button class="key-item" style="--index: 4"><span>D</span></button>
+            <script type="module" src="./main.ts"></script>
         </div>
-
-        <div id="menu-bar">
-            <button id="github-button">
-                <svg width="24" height="24" viewBox="0 0 98 96">
-                    <path
-                        fill="#fff"
-                        fill-rule="evenodd"
-                        d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"
-                        clip-rule="evenodd" />
-                </svg>
-            </button>
-            <button id="help-button">
-                <svg width="24" height="24" fill="#e8eaed" viewBox="0 -960 960 960">
-                    <path
-                        d="M424-320q0-81 14.5-116.5T500-514q41-36 62.5-62.5T584-637q0-41-27.5-68T480-732q-51 0-77.5 31T365-638l-103-44q21-64 77-111t141-47q105 0 161.5 58.5T698-641q0 50-21.5 85.5T609-475q-49 47-59.5 71.5T539-320H424Zm56 240q-33 0-56.5-23.5T400-160q0-33 23.5-56.5T480-240q33 0 56.5 23.5T560-160q0 33-23.5 56.5T480-80Z" />
-                </svg>
-            </button>
-            <button id="view-button" class="player-view">
-                <svg id="far-view" width="24" height="24" fill="#e8eaed" viewBox="0 -960 960 960">
-                    <path
-                        d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h480q33 0 56.5 23.5T720-720v180l160-160v440L720-420v180q0 33-23.5 56.5T640-160H160Zm0-80h480v-480H160v480Zm0 0v-480 480Z" />
-                </svg>
-                <svg id="player-view" width="24" height="24" fill="#e8eaed" viewBox="0 -960 960 960">
-                    <path
-                        d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
-                </svg>
-            </button>
-        </div>
-
-        <div id="operation-guide" class="hidden player-view">
-            <div class="header">
-                <button id="guide-close-button" class="">
-                    <svg width="24" height="24" fill="#fff" viewBox="0 -960 960 960">
-                        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-                    </svg>
-                </button>
-            </div>
-            <div class="player-keyboard">Use WASD keys to move</div>
-            <div class="far-view-keyboard">Press ESC to go back</div>
-            <div class="left">
-                <div class="text">Click and drag to rotate the camera</div>
-                <div class="icon">
-                    <svg width="47" height="68" viewBox="0 0 47 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            id="bottom"
-                            d="M46.5 44.5001C46.5 50.6 44.0768 56.4502 39.7635 60.7635C35.4501 65.0769 29.6 67.5001 23.5 67.5001C17.4 67.5001 11.5499 65.0769 7.23655 60.7635C2.92321 56.4502 0.500001 50.6 0.5 44.5001V32.5001H46.5V44.5001Z"
-                            fill=""
-                            stroke="white" />
-                        <path
-                            id="left"
-                            d="M0.499997 23.5C0.499997 20.4811 1.10726 17.4914 2.28738 14.7017C3.46751 11.912 5.19756 9.37647 7.37925 7.24024C9.56096 5.10398 12.1516 3.40886 15.0035 2.25217C17.7014 1.15795 20.5829 0.565967 23.5 0.505211L23.5 32.5L0.5 32.5L0.499997 23.5Z"
-                            fill=""
-                            stroke="white" />
-                        <path
-                            id="right"
-                            d="M44.7126 14.7017C45.8927 17.4915 46.5 20.4811 46.5 23.5L46.5 32.5H23.5V0.505206C26.4171 0.565963 29.2986 1.15795 31.9965 2.25217C34.8484 3.40886 37.439 5.10398 39.6207 7.24025C41.8024 9.37649 43.5325 11.912 44.7126 14.7017Z"
-                            fill=""
-                            stroke="white" />
-                        <rect id="center" x="19.5" y="10.5" width="8" height="16" rx="4" fill="white" stroke="white" />
-                    </svg>
-                </div>
-            </div>
-            <div class="right">
-                <div class="text">Click and drag to move the camera</div>
-                <div class="icon">
-                    <svg width="47" height="68" viewBox="0 0 47 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            id="bottom"
-                            d="M46.5 44.5001C46.5 50.6 44.0768 56.4502 39.7635 60.7635C35.4501 65.0769 29.6 67.5001 23.5 67.5001C17.4 67.5001 11.5499 65.0769 7.23655 60.7635C2.92321 56.4502 0.500001 50.6 0.5 44.5001V32.5001H46.5V44.5001Z"
-                            fill=""
-                            stroke="white" />
-                        <path
-                            id="left"
-                            d="M0.499997 23.5C0.499997 20.4811 1.10726 17.4914 2.28738 14.7017C3.46751 11.912 5.19756 9.37647 7.37925 7.24024C9.56096 5.10398 12.1516 3.40886 15.0035 2.25217C17.7014 1.15795 20.5829 0.565967 23.5 0.505211L23.5 32.5L0.5 32.5L0.499997 23.5Z"
-                            fill=""
-                            stroke="white" />
-                        <path
-                            id="right"
-                            d="M44.7126 14.7017C45.8927 17.4915 46.5 20.4811 46.5 23.5L46.5 32.5H23.5V0.505206C26.4171 0.565963 29.2986 1.15795 31.9965 2.25217C34.8484 3.40886 37.439 5.10398 39.6207 7.24025C41.8024 9.37649 43.5325 11.912 44.7126 14.7017Z"
-                            fill=""
-                            stroke="white" />
-                        <rect id="center" x="19.5" y="10.5" width="8" height="16" rx="4" fill="white" stroke="white" />
-                    </svg>
-                </div>
-            </div>
-            <div class="center">
-                <div class="text">Use the mouse wheel to zoom in and out</div>
-                <div class="icon">
-                    <svg width="47" height="68" viewBox="0 0 47 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            id="bottom"
-                            d="M46.5 44.5001C46.5 50.6 44.0768 56.4502 39.7635 60.7635C35.4501 65.0769 29.6 67.5001 23.5 67.5001C17.4 67.5001 11.5499 65.0769 7.23655 60.7635C2.92321 56.4502 0.500001 50.6 0.5 44.5001V32.5001H46.5V44.5001Z"
-                            fill=""
-                            stroke="white" />
-                        <path
-                            id="left"
-                            d="M0.499997 23.5C0.499997 20.4811 1.10726 17.4914 2.28738 14.7017C3.46751 11.912 5.19756 9.37647 7.37925 7.24024C9.56096 5.10398 12.1516 3.40886 15.0035 2.25217C17.7014 1.15795 20.5829 0.565967 23.5 0.505211L23.5 32.5L0.5 32.5L0.499997 23.5Z"
-                            fill=""
-                            stroke="white" />
-                        <path
-                            id="right"
-                            d="M44.7126 14.7017C45.8927 17.4915 46.5 20.4811 46.5 23.5L46.5 32.5H23.5V0.505206C26.4171 0.565963 29.2986 1.15795 31.9965 2.25217C34.8484 3.40886 37.439 5.10398 39.6207 7.24025C41.8024 9.37649 43.5325 11.912 44.7126 14.7017Z"
-                            fill=""
-                            stroke="white" />
-                        <rect id="center" x="19.5" y="10.5" width="8" height="16" rx="4" fill="white" stroke="white" />
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div id="attribute">
-            <div class="wrap">
-                <span>
-                    Based on
-                    <a href="https://www.mlit.go.jp/plateau/" target="_blank" rel="noopener noreferrer"> "PLATEAU" by the Ministry of Land, Infrastructure, Transport and Tourism (MLIT) </a>, edited
-                    and processed.
-                </span>
-            </div>
-        </div>
-        <div id="map-container" class="hidden">
-            <div id="map">
-                <button id="map-close-button" class="hidden">
-                    <svg width="24" height="24" fill="#191919" viewBox="0 -960 960 960">
-                        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-                    </svg>
-                </button>
-            </div>
-            <button id="map-open-button" class=""></button>
-        </div>
-        <div id="loading"></div>
-        <script type="module" src="./main.ts"></script>
     </body>
 </html>

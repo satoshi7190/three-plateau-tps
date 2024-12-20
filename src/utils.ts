@@ -1,6 +1,6 @@
 import proj4 from 'proj4';
 import { SCENE_CENTER_COORDS } from './constants';
-import jismesh from 'jismesh-js';
+
 import throttle from 'lodash.throttle';
 
 proj4.defs('EPSG:6677', '+proj=tmerc +lat_0=36 +lon_0=139.833333333333 +k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs');

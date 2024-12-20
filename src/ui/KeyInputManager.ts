@@ -1,5 +1,3 @@
-import { store } from '../store';
-
 const keyDict: Record<string, string> = {
     arrowup: 'w',
     arrowleft: 'a',
@@ -36,7 +34,6 @@ export class KeyInputManager {
 
         this.keyState[key] = true;
         this.setKeyActive(key, true);
-        this.handleSpecialKeys(e.key);
     }
 
     // キー解放時の処理
@@ -46,20 +43,6 @@ export class KeyInputManager {
 
         this.keyState[key] = false;
         this.setKeyActive(key, false);
-    }
-
-    // 特定のキー操作の処理
-    private handleSpecialKeys(key: string): void {
-        switch (key) {
-            case 'q':
-                if (store.get('isFarView')) return;
-                store.set('showMapViewer', !store.get('showMapViewer'));
-                break;
-            case 'Escape':
-                store.set('showMapViewer', false);
-                store.set('isFarView', false);
-                break;
-        }
     }
 
     // キー名の正規化
