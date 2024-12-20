@@ -5,6 +5,7 @@ export class JoystickControl {
     private joystickCenterX: number = 0;
     private joystickCenterY: number = 0;
     private joystickLimit: number;
+    private joystickId: string;
     private touchX: number = 0; // タッチ入力の X 値
     private touchY: number = 0; // タッチ入力の Y 値
 
@@ -16,6 +17,7 @@ export class JoystickControl {
 
         this.joystickBall = element;
         this.joystickLimit = joystickLimit;
+        this.joystickId = joystickId;
 
         // キー入力マネージャの初期化
         this.keyManager = new KeyInputManager();
@@ -80,7 +82,9 @@ export class JoystickControl {
             totalY = Math.sin(angle) * this.joystickLimit;
         }
 
-        this.joystickBall.style.translate = `${totalX}px ${totalY}px`;
+        // NOTE:デバイスの回転時を検知するため、要素を再度取得
+        const element = document.getElementById(this.joystickId) as HTMLElement;
+        element.style.transform = `translate(${totalX}px, ${totalY}px)`;
     }
 
     // ジョイスティックの方向を取得

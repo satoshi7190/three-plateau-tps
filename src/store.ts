@@ -5,6 +5,7 @@ type AppStates = {
     isFarView: boolean;
     isModelAnimation: 'idle' | 'run';
     isCameraAnimating: boolean;
+    isFullScreen: boolean;
 };
 
 // 初期状態
@@ -14,6 +15,7 @@ const State: AppStates = {
     isFarView: false,
     isModelAnimation: 'idle',
     isCameraAnimating: false,
+    isFullScreen: false,
 };
 
 // Store クラス定義
