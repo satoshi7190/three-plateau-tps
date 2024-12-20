@@ -1,6 +1,5 @@
 import proj4 from 'proj4';
 import { SCENE_CENTER_COORDS } from './constants';
-import jismesh from 'jismesh-js';
 import throttle from 'lodash.throttle';
 
 proj4.defs('EPSG:6677', '+proj=tmerc +lat_0=36 +lon_0=139.833333333333 +k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs');
@@ -25,18 +24,6 @@ export const mapPotisonToWorldPotison = (
     const x = vec2[0] - SCENE_CENTER_COORDS[0];
     const z = (vec2[1] - SCENE_CENTER_COORDS[1]) * -1;
     return { x, z };
-};
-
-/* 経緯度を平面座標に変える **/
-export const PlanePotisonToMapPotison = (lon: number, lat: number): [number, number] => {
-    const lnglat = proj4('EPSG:6677', 'WGS84', [lon, lat]) as [number, number];
-    return lnglat;
-};
-
-/* 座標から３次元メッシュコードを取得する **/
-export const getMeshCode = (lng: number, lat: number, level: number = 3): string => {
-    const mesh = jismesh.toMeshCode(lat, lng, level);
-    return mesh;
 };
 
 /*  ハッシュ値を解析する **/
