@@ -10,7 +10,7 @@ You can view the live demo [here](https://satoshi7190.github.io/three-plateau-tp
 
 ## Overview
 
-This project is a 3D map of Shinjuku Station's underground mall, built with Three.js and PLATEAU data. The map is designed to be viewed in a TPS (third-person shooter) style, where the user can move around the map and explore the underground mall from a bird's-eye view.
+This project is a 3D map of Shinjuku Station's underground mall, built with [Three.js](https://threejs.org/) and [PLATEAU](https://www.mlit.go.jp/plateau/) data. The map is designed to be viewed in a TPS (third-person shooter) style, where the user can move around the map and explore the underground mall from a bird's-eye view.
 
 ## How to Use
 
@@ -29,6 +29,10 @@ This project utilizes the following datasets:
 - [地理院ベクトル 道路中心線](https://github.com/gsi-cyberjapan/experimental_rdcl?tab=readme-ov-file)
 
 - [歩行空間ネットワークデータ（新宿駅周辺）（2018 年 3 月版適用）R1 整備\_歩行空間ネットワークデータ](https://www.hokoukukan.go.jp/metadata/resource/251)
+
+Processing Note:
+
+The data was converted to the [FlatGeoBuf](https://flatgeobuf.org/) format using [QGIS](https://www.qgis.org/) as part of the preprocessing workflow for efficient use within this project.
 
 ## Development Setup
 
