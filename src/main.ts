@@ -171,9 +171,9 @@ const loadObjs = async () => {
         addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', customSurfaceMaterial),
         addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', customSurfaceMaterial),
         addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', customSurfaceMaterial),
-        addLineObj('plateau_shinjuku/link.fgb', 'link', { color: new THREE.Color('rgb(255, 0, 204)'), height: 40, speed: 0.8 }),
-        addLineObj('plateau_shinjuku/gsi/RailCL.fgb', 'RailCL', { color: new THREE.Color('rgb(85, 255, 0)'), height: 60, speed: 1.2 }),
-        addLineObj('plateau_shinjuku/gsi/road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
+        addLineObj('line/shinjuku_link.fgb', 'link', { color: new THREE.Color('rgb(255, 0, 204)'), height: 40, speed: 0.8 }),
+        addLineObj('line/gsi_RailCL.fgb', 'RailCL', { color: new THREE.Color('rgb(85, 255, 0)'), height: 60, speed: 1.2 }),
+        addLineObj('line/gsi_road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
     ];
 
     await Promise.all(plateauObjPromises);

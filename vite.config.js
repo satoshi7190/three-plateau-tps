@@ -9,6 +9,7 @@ export default defineConfig({
         base: './',
     },
     assetsDir: './',
+    // publicDir: '../public',
     publicPath: './',
     base: './',
 });
