@@ -1,4 +1,4 @@
-import { KeyInputManager } from './KeyInputManager';
+import { KeyInputManager } from './keyInputManager';
 
 export class Joystick {
     private joystickBall: HTMLElement;
