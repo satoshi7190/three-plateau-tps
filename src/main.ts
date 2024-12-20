@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { Joystick } from './ui/joystickControl';
+import { JoystickControl } from './ui/joystickControl';
 import { TPSControls } from './ui/tpsControls';
 
 import { SCENE_CENTER_COORDS, INITIAL_LNG_LAT, INITIAL_MODEL_ROTATION } from './constants';
@@ -255,7 +255,7 @@ const addModel = (url: string) => {
 const clock = new THREE.Clock();
 
 // ジョイスティックコントロールの設定
-const joystick = new Joystick('joystick-ball');
+const joystick = new JoystickControl('joystick-ball');
 
 // アニメーション
 const animate = () => {
@@ -485,4 +485,4 @@ const setFullHeight = () => {
     document.documentElement.style.setProperty('--full-height', `${fullHeight}px`);
     document.documentElement.style.setProperty('--full-width', `${fullWidth}px`);
 };
-setFullHeight;
+setFullHeight();

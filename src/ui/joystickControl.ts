@@ -1,6 +1,6 @@
 import { KeyInputManager } from './keyInputManager';
 
-export class Joystick {
+export class JoystickControl {
     private joystickBall: HTMLElement;
     private joystickCenterX: number = 0;
     private joystickCenterY: number = 0;
