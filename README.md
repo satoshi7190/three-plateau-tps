@@ -2,7 +2,7 @@
 
 A TPS-style 3D map of Shinjuku Station's underground mall, built with Three.js and PLATEAU data.
 
-![alt text](image.png)
+![alt text](image.jpg)
 
 ## Demo
 
