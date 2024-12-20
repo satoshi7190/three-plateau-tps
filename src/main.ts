@@ -120,8 +120,6 @@ const onResize = () => {
     // カメラのアスペクト比を正す
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-
-    setFullHeight();
 };
 window.addEventListener('resize', onResize);
 
@@ -287,22 +285,4 @@ export const setPotison = (x: number, z: number) => {
     const joystickDirection = joystick.getDirection();
     tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
     const angle = tpsControls.getModelRotationAngle();
-    setMarker(x, z, angle);
 };
-
-map.on('mouseover', 'FloorSurface', () => {
-    map.getCanvas().style.cursor = 'pointer';
-});
-
-map.on('mouseleave', 'FloorSurface', () => {
-    map.getCanvas().style.cursor = '';
-});
-
-// スマホブラウザのアドレスバーの高さを除いた画面の高さを取得
-const setFullHeight = () => {
-    const fullHeight = window.innerHeight;
-    const fullWidth = window.innerWidth;
-    document.documentElement.style.setProperty('--full-height', `${fullHeight}px`);
-    document.documentElement.style.setProperty('--full-width', `${fullWidth}px`);
-};
-setFullHeight();
