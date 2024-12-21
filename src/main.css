@@ -54,7 +54,7 @@ body {
     font-weight: bold;
 }
 
-// キーが押された時のスタイル
+/* キーが押された時のスタイル */
 .key-control > .active {
     background-color: #24fff4;
     filter: drop-shadow(0 0 5px #24fff4);
