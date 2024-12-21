@@ -6,17 +6,19 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { JoystickControl } from './ui/joystickControl';
 import { TPSControls } from './ui/tpsControls';
-
-import { SCENE_CENTER_COORDS, INITIAL_LNG_LAT, INITIAL_MODEL_ROTATION } from './constants';
 import { FGB3DLoader } from './world/plateauGeometryLoader';
 import { FGB2DLineLoader } from './world/lineGeometryLoader';
 import type { FGB2DLineOption } from './world/lineGeometryLoader';
 import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
-import { customLineMaterial, customSurfaceMaterial, characterMaterial, hitBoxMaterial, floorMaterial, underGroundMaterial, customSurfaceMaterial2 } from './world/material';
+import { lineMaterial, customSurfaceMaterial, characterMaterial, hitBoxMaterial, floorMaterial, underGroundMaterial, customSurfaceMaterial2 } from './world/material';
 
 import proj4 from 'proj4';
 
 proj4.defs('EPSG:6677', '+proj=tmerc +lat_0=36 +lon_0=139.833333333333 +k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs');
+
+const SCENE_CENTER_COORDS: [number, number] = [-12043, -34145]; // シーンの中心にする地理座標[x, y] (EPSG:6677)
+const INITIAL_LNG_LAT: [number, number] = [139.699361, 35.692191]; // キャラクターのの初期緯度
+const INITIAL_MODEL_ROTATION: number = 90; // キャラクターの初期向き (0〜360)
 
 /* ワールド座標を経緯度に変える **/
 const worldPotisonToMapPotison = (x: number, z: number): [number, number] => {
@@ -131,7 +133,7 @@ const objs: {
 const lineLoader = new FGB2DLineLoader(SCENE_CENTER_COORDS);
 const addLineObj = async (url: string, name: string, option: FGB2DLineOption) => {
     lineLoader.load(url, option).then((geometry: THREE.BufferGeometry) => {
-        const road = new THREE.LineSegments(geometry, customLineMaterial);
+        const road = new THREE.LineSegments(geometry, lineMaterial);
         road.name = name;
         scene.add(road);
     });

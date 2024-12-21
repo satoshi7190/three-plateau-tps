@@ -1,3 +1,4 @@
+// 矢印キーとWASDキーの対応表
 const keyDict: Record<string, string> = {
     arrowup: 'w',
     arrowleft: 'a',

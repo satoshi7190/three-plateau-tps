@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 
-const wallRay = new THREE.Raycaster();
-const groundRay = new THREE.Raycaster();
-// 下向きベクトル
-const downDirection = new THREE.Vector3(0, -1, 0);
+const wallRay = new THREE.Raycaster(); // 壁用のレイキャスター
+const groundRay = new THREE.Raycaster(); // 地面用のレイキャスター
+const downDirection = new THREE.Vector3(0, -1, 0); // 下方向のベクトル
+
 export class TPSControls {
     model: THREE.Group;
     mixer: THREE.AnimationMixer;
@@ -86,6 +86,7 @@ export class TPSControls {
         return intersects.length > 0; // 衝突があれば true を返す
     }
 
+    // キャラクターの向きを取得するメソッド
     public getFacingDirection(): THREE.Vector3 {
         const direction = new THREE.Vector3();
         this.model.getWorldDirection(direction);

@@ -10,6 +10,7 @@ import vertexUnderGroundShader from './shader/underGround/vertex.glsl?raw';
 import fragmentLineShader from './shader/line/fragment.glsl?raw';
 import vertexLineShader from './shader/line/vertex.glsl?raw';
 
+// 建物、橋梁のマテリアル
 export const customSurfaceMaterial = new THREE.ShaderMaterial({
     transparent: true,
     uniforms: uniforms,
@@ -19,6 +20,7 @@ export const customSurfaceMaterial = new THREE.ShaderMaterial({
     depthWrite: false, // 半透明面のチラつき防止
 });
 
+// 地下街の壁、天井のマテリアル
 export const customSurfaceMaterial2 = new THREE.ShaderMaterial({
     transparent: true,
     uniforms: uniforms,
@@ -28,6 +30,7 @@ export const customSurfaceMaterial2 = new THREE.ShaderMaterial({
     depthWrite: false, // 半透明面のチラつき防止
 });
 
+// 地下街の階段、柱のマテリアル
 export const underGroundMaterial = new THREE.ShaderMaterial({
     transparent: true,
     uniforms: uniforms,
@@ -38,7 +41,7 @@ export const underGroundMaterial = new THREE.ShaderMaterial({
 });
 
 // ライン
-export const customLineMaterial = new THREE.ShaderMaterial({
+export const lineMaterial = new THREE.ShaderMaterial({
     transparent: true,
     uniforms: uniforms,
     vertexShader: vertexLineShader,
@@ -66,6 +69,4 @@ export const characterMaterial = new THREE.MeshBasicMaterial({
     color: new THREE.Color('rgb(220, 220, 220)'),
     transparent: true,
     opacity: 0.5,
-    // depthTest: false,
-    // depthWrite: false,
 });

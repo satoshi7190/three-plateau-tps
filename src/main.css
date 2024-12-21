@@ -147,7 +147,7 @@ button {
 }
 
 /* タブレット*/
-@media (min-width: 769px) and (max-width: 1280px) {
+/* @media (min-width: 769px) and (max-width: 1280px) {
     #joystick-control {
         display: block;
         position: absolute;
@@ -158,7 +158,6 @@ button {
         pointer-events: none;
         display: grid;
         place-items: center;
-        transition: all 0.3s;
     }
 
     #joystick-control > .key-item {
@@ -178,7 +177,7 @@ button {
     #joystick-control > .triangle {
         display: none;
     }
-}
+} */
 
 /* モバイル */
 @media (max-width: 768px) {
@@ -192,7 +191,6 @@ button {
         pointer-events: none;
         display: grid;
         place-items: center;
-        transition: all 0.3s;
     }
 
     #joystick-control > .key-item {
