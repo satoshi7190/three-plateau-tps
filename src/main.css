@@ -1,32 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 
-:root {
-    --full-height: 100vh;
-    --full-width: 100vw;
-    --primary-color: #24fff4;
-    --secondary-color: #2b2b2b;
-}
-
 body {
     padding: 0;
     margin: 0;
     overflow: hidden;
-    background-color: #000000;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-    height: var(--full-height);
-    width: var(--full-width);
-}
-
-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    padding: 0;
-    appearance: none;
 }
 
 /* three.js canvas */
@@ -76,11 +53,6 @@ button {
 .key-control > .active {
     background-color: #24fff4;
     filter: drop-shadow(0 0 5px #24fff4);
-}
-.key-control.hidden {
-    translate: -100px 0;
-    opacity: 0;
-    pointer-events: none;
 }
 
 /* タブレット、モバイル */

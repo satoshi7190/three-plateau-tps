@@ -10,7 +10,7 @@ import { FGB3DLoader } from './world/plateauGeometryLoader';
 import { FGB2DLineLoader } from './world/lineGeometryLoader';
 import type { FGB2DLineOption } from './world/lineGeometryLoader';
 import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
-import { lineMaterial, customSurfaceMaterial, characterMaterial, hitBoxMaterial, floorMaterial, underGroundMaterial, customSurfaceMaterial2 } from './world/material';
+import { lineMaterial, bldgbridMaterial, characterMaterial, hitBoxMaterial, floorMaterial, ubldGroundMaterial, ubldWallCeilingMaterial } from './world/material';
 
 import proj4 from 'proj4';
 
@@ -158,20 +158,20 @@ const addPlateauObj = async (url: string, name: string, material: THREE.Material
 const loadObjs = async () => {
     const plateauObjPromises = [
         addPlateauObj('plateau_shinjuku/ubld/FloorSurface.fgb', 'FloorSurface', floorMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', underGroundMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/ClosureSurface.fgb', 'ClosureSurface', customSurfaceMaterial2),
-        addPlateauObj('plateau_shinjuku/ubld/RoofSurface.fgb', 'RoofSurface', customSurfaceMaterial2),
-        addPlateauObj('plateau_shinjuku/ubld/InteriorWallSurface.fgb', 'InteriorWallSurface', customSurfaceMaterial2),
-        addPlateauObj('plateau_shinjuku/ubld/Window.fgb', 'Window', customSurfaceMaterial2),
-        addPlateauObj('plateau_shinjuku/ubld/Door.fgb', 'Door', customSurfaceMaterial2),
+        addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', ubldGroundMaterial),
+        addPlateauObj('plateau_shinjuku/ubld/ClosureSurface.fgb', 'ClosureSurface', ubldWallCeilingMaterial),
+        addPlateauObj('plateau_shinjuku/ubld/RoofSurface.fgb', 'RoofSurface', ubldWallCeilingMaterial),
+        addPlateauObj('plateau_shinjuku/ubld/InteriorWallSurface.fgb', 'InteriorWallSurface', ubldWallCeilingMaterial),
+        addPlateauObj('plateau_shinjuku/ubld/Window.fgb', 'Window', ubldWallCeilingMaterial),
+        addPlateauObj('plateau_shinjuku/ubld/Door.fgb', 'Door', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/HitBox.fgb', 'HitBox', hitBoxMaterial),
-        addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', customSurfaceMaterial),
-        addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', customSurfaceMaterial),
-        addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', customSurfaceMaterial),
-        addPlateauObj('plateau_shinjuku/bldg/53394536_Building.fgb', '53394536_Building', customSurfaceMaterial),
-        addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', customSurfaceMaterial),
-        addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', customSurfaceMaterial),
-        addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', customSurfaceMaterial),
+        addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/bldg/53394536_Building.fgb', '53394536_Building', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', bldgbridMaterial),
         addLineObj('line/shinjuku_link.fgb', 'link', { color: new THREE.Color('rgb(255, 0, 204)'), height: 40, speed: 0.8 }),
         addLineObj('line/gsi_RailCL.fgb', 'RailCL', { color: new THREE.Color('rgb(85, 255, 0)'), height: 60, speed: 1.2 }),
         addLineObj('line/gsi_road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
