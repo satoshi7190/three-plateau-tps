@@ -6,13 +6,12 @@ out vec3 v_position;
 out mat4 v_modelMatrix;
 out float v_fogDistance;
 
-
 void main() {
     v_uv = uv;
     v_normal = normal;
     v_position = position;
 
-       // ワールド座標を計算
+    // ワールド座標を計算
     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
     v_modelMatrix = modelMatrix;
 

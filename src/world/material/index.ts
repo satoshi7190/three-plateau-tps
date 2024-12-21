@@ -5,8 +5,8 @@ import bldgbridVS from './shader/bldgbrid/vertex.glsl?raw';
 import bldgbridFS from './shader/bldgbrid/fragment.glsl?raw';
 import ubldWallCeilingVS from './shader/ubldWallCeiling/vertex.glsl?raw';
 import ubldWallCeilingFS from './shader/ubldWallCeiling/fragment.glsl?raw';
-import ubldGroundVS from './shader/ubldGround/vertex.glsl?raw';
-import ubldGroundFS from './shader/ubldGround/fragment.glsl?raw';
+import ubldIntBuildingInstallationVS from './shader/ubldIntBuildingInstallation/vertex.glsl?raw';
+import ubldIntBuildingInstallationFS from './shader/ubldIntBuildingInstallation/fragment.glsl?raw';
 import lineVS from './shader/line/vertex.glsl?raw';
 import lineFS from './shader/line/fragment.glsl?raw';
 
@@ -23,7 +23,6 @@ export const bldgbridMaterial = new THREE.ShaderMaterial({
 // 地下街の壁、天井のマテリアル
 export const ubldWallCeilingMaterial = new THREE.ShaderMaterial({
     transparent: true,
-    uniforms: uniforms,
     vertexShader: ubldWallCeilingVS,
     fragmentShader: ubldWallCeilingFS,
     glslVersion: THREE.GLSL3,
@@ -31,13 +30,20 @@ export const ubldWallCeilingMaterial = new THREE.ShaderMaterial({
 });
 
 // 地下街の階段、柱のマテリアル
-export const ubldGroundMaterial = new THREE.ShaderMaterial({
+export const ubldIntBuildingInstallationMaterial = new THREE.ShaderMaterial({
     transparent: true,
-    uniforms: uniforms,
-    vertexShader: ubldGroundVS,
-    fragmentShader: ubldGroundFS,
+    vertexShader: ubldIntBuildingInstallationVS,
+    fragmentShader: ubldIntBuildingInstallationFS,
     glslVersion: THREE.GLSL3,
     depthWrite: false, // 半透明面のチラつき防止
+});
+
+// 床
+export const ubldfloorMaterial = new THREE.MeshBasicMaterial({
+    transparent: true,
+    color: new THREE.Color('rgb(0, 17, 23)'),
+    opacity: 0.7,
+    side: THREE.DoubleSide,
 });
 
 // ライン
@@ -53,14 +59,6 @@ export const lineMaterial = new THREE.ShaderMaterial({
 export const hitBoxMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
     visible: false,
-    side: THREE.DoubleSide,
-});
-
-// 床
-export const floorMaterial = new THREE.MeshBasicMaterial({
-    transparent: true,
-    color: new THREE.Color('rgb(0, 17, 23)'),
-    opacity: 0.7,
     side: THREE.DoubleSide,
 });
 

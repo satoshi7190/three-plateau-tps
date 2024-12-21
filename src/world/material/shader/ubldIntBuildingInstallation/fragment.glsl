@@ -1,6 +1,5 @@
 precision highp float;
 
-in vec2 v_uv;
 in vec3 v_normal;
 in vec3 v_position;
 in mat4 v_modelMatrix;

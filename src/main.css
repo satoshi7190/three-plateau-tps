@@ -18,7 +18,7 @@ body {
     display: none;
 }
 
-/* キーコントロールボタン */
+/* キーコントロール */
 .key-control {
     position: absolute;
     z-index: 10;
@@ -29,17 +29,20 @@ body {
     transition: all 0.3s;
     pointer-events: none;
 }
+
+/* 各キーのスタイル */
 .key-control > .key-item {
     transition: all 0.15s;
     z-index: 20;
     position: absolute;
     top: 50%;
     left: 50%;
+    --d: 50px;
     --angle: calc(360deg / 4 * var(--index));
-    --x: calc(cos(var(--angle)) * 50px);
-    --y: calc(sin(var(--angle)) * 50px);
+    --x: calc(cos(var(--angle)) * var(--d));
+    --y: calc(sin(var(--angle)) * var(--d));
     translate: calc(var(--x) - 50%) calc(var(--y) - 50%);
-    user-select: none;
+    pointer-events: none;
     color: #ffffff;
     background-color: #2b2b2b;
     display: grid;
@@ -50,6 +53,8 @@ body {
     font-size: 1rem;
     font-weight: bold;
 }
+
+// キーが押された時のスタイル
 .key-control > .active {
     background-color: #24fff4;
     filter: drop-shadow(0 0 5px #24fff4);

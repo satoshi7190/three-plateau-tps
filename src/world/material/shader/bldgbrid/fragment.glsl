@@ -18,7 +18,7 @@ out vec4 fragColor;
 
 void main() {
 
-     // // // フォッグの割合を計算 (線形補間)
+    //  フォッグの割合を計算 (線形補間)
     float fogFactor = smoothstep(u_fogNear,u_fogFar,  v_fogDistance);
     float alpha = 1.0 - fogFactor; // フォッグが濃いほど透明に
 
@@ -31,11 +31,8 @@ void main() {
 
     float a = edgeFactor(v_uv);
 
-
     vec3 color = vec3(0.0, 0.9215686274509803, 1.0);
 
-
-    // エッジの強度をそのままアルファ値に設定
     fragColor = vec4(color, alpha - a) * intensity;
 }
 

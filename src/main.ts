@@ -10,7 +10,7 @@ import { FGB3DLoader } from './world/plateauGeometryLoader';
 import { FGB2DLineLoader } from './world/lineGeometryLoader';
 import type { FGB2DLineOption } from './world/lineGeometryLoader';
 import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
-import { lineMaterial, bldgbridMaterial, characterMaterial, hitBoxMaterial, floorMaterial, ubldGroundMaterial, ubldWallCeilingMaterial } from './world/material';
+import { lineMaterial, bldgbridMaterial, characterMaterial, hitBoxMaterial, ubldfloorMaterial, ubldIntBuildingInstallationMaterial, ubldWallCeilingMaterial } from './world/material';
 import proj4 from 'proj4';
 proj4.defs('EPSG:6677', '+proj=tmerc +lat_0=36 +lon_0=139.833333333333 +k=0.9999 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs');
 
@@ -44,7 +44,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
 // camera.position.set(18, 9, 3);
 
-camera.position.set(500, 500, 500);
+camera.position.set(100, 100, 100);
 // camera.zoom = 0.5;
 scene.add(camera);
 
@@ -117,17 +117,16 @@ const onResize = () => {
 };
 window.addEventListener('resize', onResize);
 
-// オブジェクトを読み込み
-const objs: {
-    [key: string]: THREE.Mesh;
-} = {};
-
 const lineLoader = new FGB2DLineLoader(SCENE_CENTER_COORDS);
 const addLineObj = async (url: string, name: string, option: FGB2DLineOption) => {
     lineLoader.load(url, option).then((geometry: THREE.BufferGeometry) => {
-        const road = new THREE.LineSegments(geometry, lineMaterial);
-        road.name = name;
-        scene.add(road);
+        const obj = new THREE.LineSegments(geometry, lineMaterial);
+
+        // オブジェクトの追加
+        obj.name = name;
+
+        // シーンに追加
+        scene.add(obj);
     });
 };
 
@@ -135,13 +134,14 @@ const plateauLoader = new FGB3DLoader(SCENE_CENTER_COORDS);
 const addPlateauObj = async (url: string, name: string, material: THREE.Material) => {
     plateauLoader.load(url).then((geometry: THREE.BufferGeometry) => {
         // レイキャスト
-        if (raycastObjectNames.includes(name as IsRaycastObjectName)) {
-            geometry.boundsTree = new MeshBVH(geometry);
-        }
+        // if (raycastObjectNames.includes(name as IsRaycastObjectName)) {
+        //     geometry.boundsTree = new MeshBVH(geometry);
+        // }
 
         const obj = new THREE.Mesh(geometry, material);
         obj.name = name;
-        objs[name] = obj;
+
+        // シーンに追加
         scene.add(obj);
     });
 };
@@ -149,21 +149,21 @@ const addPlateauObj = async (url: string, name: string, material: THREE.Material
 // オブジェクトを読み込み
 const loadObjs = async () => {
     const plateauObjPromises = [
-        addPlateauObj('plateau_shinjuku/ubld/FloorSurface.fgb', 'FloorSurface', floorMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', ubldGroundMaterial),
+        addPlateauObj('plateau_shinjuku/ubld/FloorSurface.fgb', 'FloorSurface', ubldfloorMaterial),
+        addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', ubldIntBuildingInstallationMaterial),
         addPlateauObj('plateau_shinjuku/ubld/ClosureSurface.fgb', 'ClosureSurface', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/RoofSurface.fgb', 'RoofSurface', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/InteriorWallSurface.fgb', 'InteriorWallSurface', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/Window.fgb', 'Window', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/Door.fgb', 'Door', ubldWallCeilingMaterial),
         // addPlateauObj('plateau_shinjuku/ubld/HitBox.fgb', 'HitBox', hitBoxMaterial),
-        // addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', bldgbridMaterial),
-        // addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', bldgbridMaterial),
-        // addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', bldgbridMaterial),
-        // addPlateauObj('plateau_shinjuku/bldg/53394536_Building.fgb', '53394536_Building', bldgbridMaterial),
-        // addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', bldgbridMaterial),
-        // addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', bldgbridMaterial),
-        // addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/bldg/53394536_Building.fgb', '53394536_Building', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', bldgbridMaterial),
+        addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', bldgbridMaterial),
         // addLineObj('line/shinjuku_link.fgb', 'link', { color: new THREE.Color('rgb(255, 0, 204)'), height: 40, speed: 0.8 }),
         // addLineObj('line/gsi_RailCL.fgb', 'RailCL', { color: new THREE.Color('rgb(85, 255, 0)'), height: 60, speed: 1.2 }),
         // addLineObj('line/gsi_road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
@@ -172,12 +172,13 @@ const loadObjs = async () => {
     await Promise.all(plateauObjPromises);
 
     // モデルの追加
-    // addModel('./models/Xbot.glb');
+    addModel('./models/Xbot.glb');
 };
 
 // 読み込み開始
 loadObjs();
 
+// モデルの追加
 const addModel = (url: string) => {
     new GLTFLoader().load(url, function (gltf) {
         const model = gltf.scene;
@@ -188,13 +189,16 @@ const addModel = (url: string) => {
             }
         });
 
+        // だいたいの人間の大きさに合わせる
         model.scale.set(0.9, 0.9, 0.9);
 
-        const initilPos = mapPotisonToWorldPotison(INITIAL_LNG_LAT[0], INITIAL_LNG_LAT[1]);
-        model.position.set(initilPos.x, 500, initilPos.z);
-        model.rotation.y = THREE.MathUtils.degToRad(INITIAL_MODEL_ROTATION); // 度をラジアンに変換
+        model.position.set(0, 500, 0);
 
-        const ground = objs.FloorSurface;
+        // const initilPos = mapPotisonToWorldPotison(INITIAL_LNG_LAT[0], INITIAL_LNG_LAT[1]);
+        // model.position.set(initilPos.x, 500, initilPos.z);
+        // model.rotation.y = THREE.MathUtils.degToRad(INITIAL_MODEL_ROTATION); // 度をラジアンに変換
+
+        const ground = scene.getObjectByName('FloorSurface');
 
         if (ground) {
             // レイキャストの設定
@@ -203,27 +207,31 @@ const addModel = (url: string) => {
 
             if (intersects.length > 0) {
                 model.position.y = intersects[0].point.y;
-            } else {
-                model.position.set(0, 500, 0);
-                raycaster.set(model.position, downDirection);
-                const intersects = raycaster.intersectObject(ground, true);
-                if (intersects.length > 0) {
-                    model.position.y = intersects[0].point.y;
-                }
             }
+
+            // if (intersects.length > 0) {
+            //     model.position.y = intersects[0].point.y;
+            // } else {
+            //     model.position.set(0, 500, 0);
+            //     raycaster.set(model.position, downDirection);
+            //     const intersects = raycaster.intersectObject(ground, true);
+            //     if (intersects.length > 0) {
+            //         model.position.y = intersects[0].point.y;
+            //     }
+            // }
         }
         scene.add(model);
 
-        const gltfAnimations: THREE.AnimationClip[] = gltf.animations;
-        const mixer = new THREE.AnimationMixer(model);
-        const animationsMap: Map<string, THREE.AnimationAction> = new Map();
+        // const gltfAnimations: THREE.AnimationClip[] = gltf.animations;
+        // const mixer = new THREE.AnimationMixer(model);
+        // const animationsMap: Map<string, THREE.AnimationAction> = new Map();
 
-        gltfAnimations.forEach((a: THREE.AnimationClip) => {
-            animationsMap.set(a.name, mixer.clipAction(a));
-        });
+        // gltfAnimations.forEach((a: THREE.AnimationClip) => {
+        //     animationsMap.set(a.name, mixer.clipAction(a));
+        // });
 
-        tpsControls = new TPSControls(model, mixer, animationsMap, orbitControls, zoomControls, camera, 'agree');
-        tpsControls.update;
+        // tpsControls = new TPSControls(model, mixer, animationsMap, orbitControls, zoomControls, camera, 'agree');
+        // tpsControls.update;
     });
 };
 
@@ -240,19 +248,19 @@ const animate = () => {
     const target = orbitControls.target;
     zoomControls.target.set(target.x, target.y, target.z);
 
-    let mixerUpdateDelta = clock.getDelta();
-    if (tpsControls) {
-        const characterPosition = tpsControls.getPosition();
-        const rayPosition = characterPosition.clone();
-        rayPosition.y += 1.5;
-        const hitBox = objs.HitBox;
-        const ground = objs.FloorSurface;
+    // let mixerUpdateDelta = clock.getDelta();
+    // if (tpsControls) {
+    //     const characterPosition = tpsControls.getPosition();
+    //     const rayPosition = characterPosition.clone();
+    //     rayPosition.y += 1.5;
+    //     const hitBox = objs.HitBox;
+    //     const ground = objs.FloorSurface;
 
-        const joystickDirection = joystick.getDirection();
-        if (ground && hitBox) {
-            tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
-        }
-    }
+    //     const joystickDirection = joystick.getDirection();
+    //     if (ground && hitBox) {
+    //         tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
+    //     }
+    // }
 
     orbitControls.update();
     zoomControls.update();
@@ -263,8 +271,8 @@ const animate = () => {
 animate();
 
 export const setPotison = (x: number, z: number) => {
-    const ground = objs.FloorSurface;
-    const hitBox = objs.HitBox;
+    const ground = scene.getObjectByName('FloorSurface');
+    const hitBox = scene.getObjectByName('HitBox');
     // レイキャストの設定
     raycaster.set(new THREE.Vector3(x, 1000, z), downDirection);
     const intersects = raycaster.intersectObject(ground, true);
@@ -273,9 +281,9 @@ export const setPotison = (x: number, z: number) => {
     if (intersects.length > 0) {
         const y = intersects[0].point.y;
 
-        tpsControls.setModelPosition(x, y, z);
+        // tpsControls.setModelPosition(x, y, z);
     }
 
     const joystickDirection = joystick.getDirection();
-    tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
+    // tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
 };
