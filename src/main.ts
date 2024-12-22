@@ -202,12 +202,12 @@ const addModel = (url: string) => {
         if (hashData) {
             const { angle, lat, lng } = hashData;
             const initilPos = mapPotisonToWorldPotison(lng, lat);
-            model.position.set(initilPos.x, 500, initilPos.z);
+            model.position.set(initilPos.x, 100, initilPos.z);
             // モデルの回転
             model.rotation.y = THREE.MathUtils.degToRad(angle + 180); // 度をラジアンに変換
         } else {
             const initilPos = mapPotisonToWorldPotison(INITIAL_LNG_LAT[0], INITIAL_LNG_LAT[1]);
-            model.position.set(initilPos.x, 500, initilPos.z);
+            model.position.set(initilPos.x, 100, initilPos.z);
             model.rotation.y = THREE.MathUtils.degToRad(INITIAL_MODEL_ROTATION); // 度をラジアンに変換
         }
 
@@ -221,7 +221,7 @@ const addModel = (url: string) => {
             if (intersects.length > 0) {
                 model.position.y = intersects[0].point.y;
             } else {
-                model.position.set(0, 500, 0);
+                model.position.set(0, 100, 0);
                 raycaster.set(model.position, downDirection);
                 const intersects = raycaster.intersectObject(ground, true);
                 if (intersects.length > 0) {
@@ -292,7 +292,7 @@ export const setPotison = (x: number, z: number) => {
     const ground = objs.FloorSurface;
     const hitBox = objs.HitBox;
     // レイキャストの設定
-    raycaster.set(new THREE.Vector3(x, 1000, z), downDirection);
+    raycaster.set(new THREE.Vector3(x, 100, z), downDirection);
     const intersects = raycaster.intersectObject(ground, true);
     let mixerUpdateDelta = clock.getDelta();
 
