@@ -156,15 +156,19 @@ const addPlateauObj = async (url: string, name: string, material: THREE.Material
 
 // オブジェクトを読み込み
 const loadObjs = async () => {
-    const plateauObjPromises = [
-        addPlateauObj('plateau_shinjuku/ubld/FloorSurface.fgb', 'FloorSurface', ubldfloorMaterial),
+    const initialPromises = [addPlateauObj('plateau_shinjuku/ubld/FloorSurface.fgb', 'FloorSurface', ubldfloorMaterial), addPlateauObj('plateau_shinjuku/ubld/HitBox.fgb', 'HitBox', hitBoxMaterial)];
+
+    const modelPromise = async () => {
+        await addModel('./models/Xbot.glb');
+    };
+
+    const otherPromises = [
         addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', ubldIntBuildingInstallationMaterial),
         addPlateauObj('plateau_shinjuku/ubld/ClosureSurface.fgb', 'ClosureSurface', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/RoofSurface.fgb', 'RoofSurface', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/InteriorWallSurface.fgb', 'InteriorWallSurface', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/Window.fgb', 'Window', ubldWallCeilingMaterial),
         addPlateauObj('plateau_shinjuku/ubld/Door.fgb', 'Door', ubldWallCeilingMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/HitBox.fgb', 'HitBox', hitBoxMaterial),
         addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', bldgbridMaterial),
         addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', bldgbridMaterial),
         addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', bldgbridMaterial),
@@ -177,10 +181,14 @@ const loadObjs = async () => {
         addLineObj('line/gsi_road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
     ];
 
-    await Promise.all(plateauObjPromises);
+    // HitBox と FloorSurface を読み込み
+    await Promise.all(initialPromises);
 
-    // モデルの追加
-    await addModel('./models/Xbot.glb');
+    // モデルを読み込み
+    await modelPromise();
+
+    // その他のオブジェクトを読み込み
+    await Promise.all(otherPromises);
 };
 
 // 読み込み開始
