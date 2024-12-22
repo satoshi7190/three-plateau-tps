@@ -180,7 +180,7 @@ const loadObjs = async () => {
     await Promise.all(plateauObjPromises);
 
     // モデルの追加
-    addModel('./models/Xbot.glb');
+    await addModel('./models/Xbot.glb');
 };
 
 // 読み込み開始
