@@ -13,11 +13,6 @@ body {
     height: 100vh;
 }
 
-/* ジョイスティックコントロール */
-#joystick-control {
-    display: none;
-}
-
 /* キーコントロール */
 .key-control {
     position: absolute;
@@ -60,67 +55,15 @@ body {
     filter: drop-shadow(0 0 5px #24fff4);
 }
 
+/* PCはジョイスティックUIを非表示 */
+#joystick-control {
+    display: none;
+}
+
 /* タブレット、モバイル */
 @media (max-width: 1280px) {
     /* スマホのスワイプリロード無効 */
     /* スマホのタップのハイライト非表示 */
-    * {
-        overscroll-behavior-y: none !important;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    #key-control {
-        display: none;
-    }
-
-    #joystick-control.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-    #joystick-control > .joystick-frame {
-        width: 130px;
-        height: 130px;
-        border-radius: 100rem;
-        border: 2px white solid;
-    }
-    #joystick-control > .joystick-ball {
-        pointer-events: auto;
-        width: 80px;
-        height: 80px;
-        /* background: white; */
-        border-radius: 100rem;
-        position: absolute;
-        filter: drop-shadow(0 0 5px #24fff4);
-        display: grid;
-        place-items: center;
-    }
-    #joystick-control > .joystick-ball > .joystick-ball-inner {
-        pointer-events: none;
-        width: 50px;
-        height: 50px;
-        background: white;
-        border-radius: 100rem;
-        position: absolute;
-        filter: drop-shadow(0 0 5px #24fff4);
-    }
-    #joystick-control > .triangle {
-        z-index: 20;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        --angle: calc(360deg / 4 * var(--index));
-        --d: 50px;
-        --x: calc(cos(var(--angle)) * var(--d));
-        --y: calc(sin(var(--angle)) * var(--d));
-        translate: calc(var(--x) - 50%) calc(var(--y) - 50%);
-        rotate: calc(var(--angle) + 90deg);
-        user-select: none;
-        pointer-events: none;
-        background: #ffffff;
-        height: calc(tan(60deg) * 10px / 2);
-        width: 19px;
-        clip-path: polygon(50% 0, 100% 100%, 0 100%);
-    }
 }
 
 /* タブレット*/
@@ -156,8 +99,21 @@ body {
     }
 } */
 
-/* モバイル */
+/* スマホ */
 @media (max-width: 768px) {
+    * {
+        /* スマホのスワイプリロード無効 */
+        overscroll-behavior-y: none !important;
+        /* スマホのタップのハイライト非表示 */
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* スマホはキーのUIを非表示 */
+    #key-control {
+        display: none;
+    }
+
+    /* ジョイスティックUI */
     #joystick-control {
         display: block;
         position: absolute;
@@ -169,13 +125,53 @@ body {
         display: grid;
         place-items: center;
     }
-
-    #joystick-control > .key-item {
-        display: none;
+    #joystick-control > .joystick-frame {
+        width: 130px;
+        height: 130px;
+        border-radius: 100rem;
+        border: 2px white solid;
     }
 
-    #attribute .wrap {
-        animation: loop-slide 20s infinite linear, text-feed 20s infinite;
-        justify-content: center;
+    /* ジョイスティックのボール（これをタップして操作する） */
+    #joystick-control > .joystick-ball {
+        pointer-events: auto;
+        width: 80px;
+        height: 80px;
+        border-radius: 100rem;
+        position: absolute;
+        filter: drop-shadow(0 0 5px #24fff4);
+        display: grid;
+        place-items: center;
+    }
+
+    /* ジョイスティックのボールの見た目 */
+    #joystick-control > .joystick-ball > .joystick-ball-inner {
+        pointer-events: none;
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 100rem;
+        position: absolute;
+        filter: drop-shadow(0 0 5px #24fff4);
+    }
+
+    /* 中の三角形 */
+    #joystick-control > .triangle {
+        z-index: 20;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        --angle: calc(360deg / 4 * var(--index));
+        --d: 50px;
+        --x: calc(cos(var(--angle)) * var(--d));
+        --y: calc(sin(var(--angle)) * var(--d));
+        translate: calc(var(--x) - 50%) calc(var(--y) - 50%);
+        rotate: calc(var(--angle) + 90deg);
+        user-select: none;
+        pointer-events: none;
+        background: #ffffff;
+        height: calc(tan(60deg) * 10px / 2);
+        width: 19px;
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
     }
 }

@@ -58,8 +58,8 @@ export const lineMaterial = new THREE.ShaderMaterial({
 // 衝突判定マテリアル
 export const hitBoxMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
-    visible: false,
-    side: THREE.DoubleSide,
+    side: THREE.DoubleSide, // 両面
+    visible: false, // 非表示にする
 });
 
 // キャラクターのマテリアル

@@ -1,5 +1,6 @@
 import { KeyInputManager } from './keyInputManager';
 
+// ジョイスティックの操作を管理するクラス
 export class JoystickControl {
     private joystickBall: HTMLElement;
     private joystickCenterX: number = 0;
