@@ -34,7 +34,7 @@ This project utilizes the following datasets:
 
 Processing Note:
 
-The data was converted to the [FlatGeoBuf](https://flatgeobuf.org/) format using [QGIS](https://www.qgis.org/) as part of the preprocessing workflow for efficient use within this project.
+The data was converted to the [FlatGeoBuf](https://flatgeobuf.org/) format using [QGIS](https://www.qgis.org/) as part of the preprocessing workflow for efficient use within this project. For detailed steps on converting data to FlatGeoBuf, refer to [this article on Qiita](https://qiita.com/satoshi7190/items/67148db8b3149e73c4b0).
 
 ## Development Setup
 
