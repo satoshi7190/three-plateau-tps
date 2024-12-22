@@ -158,37 +158,11 @@ const addPlateauObj = async (url: string, name: string, material: THREE.Material
 const loadObjs = async () => {
     const initialPromises = [addPlateauObj('plateau_shinjuku/ubld/FloorSurface.fgb', 'FloorSurface', ubldfloorMaterial), addPlateauObj('plateau_shinjuku/ubld/HitBox.fgb', 'HitBox', hitBoxMaterial)];
 
-    const modelPromise = async () => {
-        await addModel('./models/Xbot.glb');
-    };
-
-    const otherPromises = [
-        addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', ubldIntBuildingInstallationMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/ClosureSurface.fgb', 'ClosureSurface', ubldWallCeilingMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/RoofSurface.fgb', 'RoofSurface', ubldWallCeilingMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/InteriorWallSurface.fgb', 'InteriorWallSurface', ubldWallCeilingMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/Window.fgb', 'Window', ubldWallCeilingMaterial),
-        addPlateauObj('plateau_shinjuku/ubld/Door.fgb', 'Door', ubldWallCeilingMaterial),
-        addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', bldgbridMaterial),
-        addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', bldgbridMaterial),
-        addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', bldgbridMaterial),
-        addPlateauObj('plateau_shinjuku/bldg/53394536_Building.fgb', '53394536_Building', bldgbridMaterial),
-        addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', bldgbridMaterial),
-        addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', bldgbridMaterial),
-        addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', bldgbridMaterial),
-        addLineObj('line/shinjuku_link.fgb', 'link', { color: new THREE.Color('rgb(255, 0, 204)'), height: 40, speed: 0.8 }),
-        addLineObj('line/gsi_RailCL.fgb', 'RailCL', { color: new THREE.Color('rgb(85, 255, 0)'), height: 60, speed: 1.2 }),
-        addLineObj('line/gsi_road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
-    ];
-
     // HitBox と FloorSurface を読み込み
     await Promise.all(initialPromises);
 
     // モデルを読み込み
-    await modelPromise();
-
-    // その他のオブジェクトを読み込み
-    await Promise.all(otherPromises);
+    await addModel('./models/Xbot.glb');
 };
 
 // 読み込み開始
@@ -249,7 +223,27 @@ const addModel = (url: string) => {
 
         tpsControls = new TPSControls(model, mixer, animationsMap, orbitControls, zoomControls, camera, 'agree');
         tpsControls.update;
-        loadingEnd().then(() => {
+
+        loadingEnd().then(async () => {
+            const otherPromises = [
+                addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', ubldIntBuildingInstallationMaterial),
+                addPlateauObj('plateau_shinjuku/ubld/ClosureSurface.fgb', 'ClosureSurface', ubldWallCeilingMaterial),
+                addPlateauObj('plateau_shinjuku/ubld/RoofSurface.fgb', 'RoofSurface', ubldWallCeilingMaterial),
+                addPlateauObj('plateau_shinjuku/ubld/InteriorWallSurface.fgb', 'InteriorWallSurface', ubldWallCeilingMaterial),
+                addPlateauObj('plateau_shinjuku/ubld/Window.fgb', 'Window', ubldWallCeilingMaterial),
+                addPlateauObj('plateau_shinjuku/ubld/Door.fgb', 'Door', ubldWallCeilingMaterial),
+                addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', bldgbridMaterial),
+                addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', bldgbridMaterial),
+                addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', bldgbridMaterial),
+                addPlateauObj('plateau_shinjuku/bldg/53394536_Building.fgb', '53394536_Building', bldgbridMaterial),
+                addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', bldgbridMaterial),
+                addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', bldgbridMaterial),
+                addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', bldgbridMaterial),
+                addLineObj('line/shinjuku_link.fgb', 'link', { color: new THREE.Color('rgb(255, 0, 204)'), height: 40, speed: 0.8 }),
+                addLineObj('line/gsi_RailCL.fgb', 'RailCL', { color: new THREE.Color('rgb(85, 255, 0)'), height: 60, speed: 1.2 }),
+                addLineObj('line/gsi_road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
+            ];
+
             elManager.get('keyControl')?.classList.remove('hidden');
             elManager.get('mapContainer')?.classList.remove('hidden');
             elManager.get('joystickControl')?.classList.remove('hidden');
@@ -257,6 +251,7 @@ const addModel = (url: string) => {
             if (checkLocalStorage('userData')) {
                 store.set('showOperationGuide', true);
             }
+            await Promise.all(otherPromises).then(() => {});
         });
     });
 };
