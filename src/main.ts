@@ -208,6 +208,9 @@ const addModel = (url: string) => {
                 const intersects = raycaster.intersectObject(ground, true);
                 if (intersects.length > 0) {
                     model.position.y = intersects[0].point.y;
+                } else {
+                    // TODO 決め内の高さ
+                    model.position.y = 30.729000091552734;
                 }
             }
         }
