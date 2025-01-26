@@ -187,33 +187,34 @@ const addModel = (url: string) => {
             model.position.set(initilPos.x, 100, initilPos.z);
             // モデルの回転
             model.rotation.y = THREE.MathUtils.degToRad(angle + 180); // 度をラジアンに変換
-        } else {
-            const initilPos = mapPotisonToWorldPotison(INITIAL_LNG_LAT[0], INITIAL_LNG_LAT[1]);
-            model.position.set(initilPos.x, 100, initilPos.z);
-            model.rotation.y = THREE.MathUtils.degToRad(INITIAL_MODEL_ROTATION); // 度をラジアンに変換
-        }
 
-        const ground = objs.FloorSurface;
+            const ground = objs.FloorSurface;
 
-        if (ground) {
-            // レイキャストの設定
-            raycaster.set(model.position, downDirection);
-            const intersects = raycaster.intersectObject(ground, true);
-
-            if (intersects.length > 0) {
-                model.position.y = intersects[0].point.y;
-            } else {
-                model.position.set(0, 100, 0);
+            if (ground) {
+                // レイキャストの設定
                 raycaster.set(model.position, downDirection);
                 const intersects = raycaster.intersectObject(ground, true);
+
                 if (intersects.length > 0) {
                     model.position.y = intersects[0].point.y;
                 } else {
-                    // TODO 決め内の高さ
-                    model.position.y = 30.729000091552734;
+                    model.position.set(0, 100, 0);
+                    raycaster.set(model.position, downDirection);
+                    const intersects = raycaster.intersectObject(ground, true);
+                    if (intersects.length > 0) {
+                        model.position.y = intersects[0].point.y;
+                    } else {
+                        // TODO Height within the decision
+                        model.position.y = 30.729000091552734;
+                    }
                 }
             }
+        } else {
+            const initilPos = mapPotisonToWorldPotison(INITIAL_LNG_LAT[0], INITIAL_LNG_LAT[1]);
+            model.position.set(initilPos.x, 30.729000091552734, initilPos.z);
+            model.rotation.y = THREE.MathUtils.degToRad(INITIAL_MODEL_ROTATION); // 度をラジアンに変換
         }
+
         scene.add(model);
 
         const gltfAnimations: THREE.AnimationClip[] = gltf.animations;
