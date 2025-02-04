@@ -49,7 +49,7 @@ const raycastObjectNames: IsRaycastObjectName[] = ['FloorSurface', 'HitBox'];
 const scene = new THREE.Scene();
 
 // カメラ
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500);
 camera.position.set(18, 9, 3);
 camera.zoom = 0.5;
 scene.add(camera);
@@ -373,6 +373,16 @@ const toggleView = (val: boolean) => {
         },
     });
 
+    // `camera.far` のスムーズなアニメーション
+    const farAnim = gsap.to(camera, {
+        far: val ? 5000 : 500,
+        duration: 1.0,
+        ease: 'power1',
+        onUpdate: () => {
+            camera.updateProjectionMatrix();
+        },
+    });
+
     // すべてのアニメーションの完了を待つ
     gsap.timeline({
         onComplete: () => {
@@ -384,7 +394,8 @@ const toggleView = (val: boolean) => {
     })
         .add(cameraPositionAnim)
         .add(targetAnim, '-=1.0')
-        .add(fovAnim, '-=1.0');
+        .add(fovAnim, '-=1.0')
+        .add(farAnim, '-=1.0');
 };
 
 let popup: maplibregl.Popup;
