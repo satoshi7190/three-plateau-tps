@@ -221,10 +221,12 @@ store.subscribe('showMapViewer', (value) => {
     if (value) {
         currentCenter = map.getCenter();
         map.setPaintProperty('background', 'background-opacity', 1.0);
-        divChild.classList.remove('active');
+
+        divChild.classList.add('hidden');
     } else {
         map.setPaintProperty('background', 'background-opacity', 0.5);
+
         map.easeTo({ center: currentCenter, duration: 0 });
-        divChild.classList.add('active');
+        divChild.classList.remove('hidden');
     }
 });

@@ -415,19 +415,23 @@ body:has(#map-container.active) .maplibregl-ctrl-bottom-right {
 
 /* カメラ角度マーカー */
 .camera-angle-marker {
-    width: 100px;
-    height: 100px;
+    width: 160px;
+    height: 160px;
 }
 
-.camera-angle-marker > .camera-angle.active {
-    width: 50px;
-    height: 50px;
+.camera-angle-marker > .camera-angle {
+    width: 80px;
+    height: 80px;
     transform-origin: bottom right;
     /* rotate: 45deg; */
     opacity: 0.6;
     background: rgb(255, 255, 255);
-    background: linear-gradient(315deg, rgb(205, 223, 2) 0%, rgba(0, 250, 245, 0) 100%);
-    border-top-left-radius: 50px;
+    background: linear-gradient(315deg, rgb(205, 223, 2) 0%, rgba(205, 223, 2, 0) 65%, rgba(0, 0, 0, 0) 100%);
+    border-top-left-radius: 80px;
+}
+
+.camera-angle-marker > .camera-angle.hidden {
+    display: none;
 }
 
 /* ポップアップ */
