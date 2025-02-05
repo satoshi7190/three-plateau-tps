@@ -401,13 +401,33 @@ body:has(#map-container.active) .maplibregl-ctrl-bottom-right {
 }
 
 /* 現在地マーカー*/
-.maplibregl-marker > svg {
+.player-marker {
+    z-index: 10;
+}
+.player-marker > svg {
     transform-origin: center;
     scale: 0.5;
     filter: drop-shadow(0 0 5px #24fff4);
 }
-.maplibregl-marker > svg > path {
+.player-marker > svg > path {
     fill: #24fff4;
+}
+
+/* カメラ角度マーカー */
+.camera-angle-marker {
+    width: 100px;
+    height: 100px;
+}
+
+.camera-angle-marker > .camera-angle.active {
+    width: 50px;
+    height: 50px;
+    transform-origin: bottom right;
+    /* rotate: 45deg; */
+    opacity: 0.6;
+    background: rgb(255, 255, 255);
+    background: linear-gradient(315deg, rgb(205, 223, 2) 0%, rgba(0, 250, 245, 0) 100%);
+    border-top-left-radius: 50px;
 }
 
 /* ポップアップ */

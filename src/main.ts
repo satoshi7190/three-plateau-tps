@@ -10,7 +10,7 @@ import { JoystickControl } from './ui/joystickControl';
 import { TPSControls } from './ui/tpsControls';
 
 import { SCENE_CENTER_COORDS, INITIAL_LNG_LAT, INITIAL_MODEL_ROTATION } from './constants';
-import { map, setMarker } from './map';
+import { map, setPlayerMarker, setCameraMarker } from './map';
 import { FGB3DLoader } from './world/plateauGeometryLoader';
 import { FGB2DLineLoader } from './world/lineGeometryLoader';
 import type { FGB2DLineOption } from './world/lineGeometryLoader';
@@ -230,22 +230,22 @@ const addModel = (url: string) => {
 
         loadingEnd().then(async () => {
             const otherPromises = [
-                addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', ubldIntBuildingInstallationMaterial),
-                addPlateauObj('plateau_shinjuku/ubld/ClosureSurface.fgb', 'ClosureSurface', ubldWallCeilingMaterial),
-                addPlateauObj('plateau_shinjuku/ubld/RoofSurface.fgb', 'RoofSurface', ubldWallCeilingMaterial),
-                addPlateauObj('plateau_shinjuku/ubld/InteriorWallSurface.fgb', 'InteriorWallSurface', ubldWallCeilingMaterial),
-                addPlateauObj('plateau_shinjuku/ubld/Window.fgb', 'Window', ubldWallCeilingMaterial),
-                addPlateauObj('plateau_shinjuku/ubld/Door.fgb', 'Door', ubldWallCeilingMaterial),
-                addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', bldgbridMaterial),
-                addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', bldgbridMaterial),
-                addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', bldgbridMaterial),
-                addPlateauObj('plateau_shinjuku/bldg/53394536_Building.fgb', '53394536_Building', bldgbridMaterial),
-                addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', bldgbridMaterial),
-                addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', bldgbridMaterial),
-                addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', bldgbridMaterial),
-                addLineObj('line/shinjuku_link.fgb', 'link', { color: new THREE.Color('rgb(255, 0, 204)'), height: 40, speed: 0.8 }),
-                addLineObj('line/gsi_RailCL.fgb', 'RailCL', { color: new THREE.Color('rgb(85, 255, 0)'), height: 60, speed: 1.2 }),
-                addLineObj('line/gsi_road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
+                // addPlateauObj('plateau_shinjuku/ubld/IntBuildingInstallation.fgb', 'IntBuildingInstallation', ubldIntBuildingInstallationMaterial),
+                // addPlateauObj('plateau_shinjuku/ubld/ClosureSurface.fgb', 'ClosureSurface', ubldWallCeilingMaterial),
+                // addPlateauObj('plateau_shinjuku/ubld/RoofSurface.fgb', 'RoofSurface', ubldWallCeilingMaterial),
+                // addPlateauObj('plateau_shinjuku/ubld/InteriorWallSurface.fgb', 'InteriorWallSurface', ubldWallCeilingMaterial),
+                // addPlateauObj('plateau_shinjuku/ubld/Window.fgb', 'Window', ubldWallCeilingMaterial),
+                // addPlateauObj('plateau_shinjuku/ubld/Door.fgb', 'Door', ubldWallCeilingMaterial),
+                // addPlateauObj('plateau_shinjuku/bldg/53394525_Building.fgb', '53394525_Building', bldgbridMaterial),
+                // addPlateauObj('plateau_shinjuku/bldg/53394535_Building.fgb', '53394535_Building', bldgbridMaterial),
+                // addPlateauObj('plateau_shinjuku/bldg/53394526_Building.fgb', '53394526_Building', bldgbridMaterial),
+                // addPlateauObj('plateau_shinjuku/bldg/53394536_Building.fgb', '53394536_Building', bldgbridMaterial),
+                // addPlateauObj('plateau_shinjuku/brid/53394525_Bridge.fgb', '53394525_Bridge', bldgbridMaterial),
+                // addPlateauObj('plateau_shinjuku/brid/53394526_Bridge.fgb', '53394526_Bridge', bldgbridMaterial),
+                // addPlateauObj('plateau_shinjuku/brid/53394535_Bridge.fgb', '53394535_Bridge', bldgbridMaterial),
+                // addLineObj('line/shinjuku_link.fgb', 'link', { color: new THREE.Color('rgb(255, 0, 204)'), height: 40, speed: 0.8 }),
+                // addLineObj('line/gsi_RailCL.fgb', 'RailCL', { color: new THREE.Color('rgb(85, 255, 0)'), height: 60, speed: 1.2 }),
+                // addLineObj('line/gsi_road.fgb', 'road', { color: new THREE.Color('rgb(255, 255, 0)'), height: 50, speed: 1.0 }),
             ];
 
             elManager.get('keyControl')?.classList.remove('hidden');
@@ -274,16 +274,26 @@ const animate = () => {
     zoomControls.target.set(target.x, target.y, target.z);
 
     let mixerUpdateDelta = clock.getDelta();
-    if (tpsControls && !store.get('isFarView') && !store.get('showMapViewer')) {
-        const characterPosition = tpsControls.getPosition();
-        const rayPosition = characterPosition.clone();
-        rayPosition.y += 1.5;
-        const hitBox = objs.HitBox;
-        const ground = objs.FloorSurface;
+    if (tpsControls) {
+        if (!store.get('isFarView') && !store.get('showMapViewer')) {
+            const characterPosition = tpsControls.getPosition();
+            const rayPosition = characterPosition.clone();
+            rayPosition.y += 1.5;
+            const hitBox = objs.HitBox;
+            const ground = objs.FloorSurface;
 
-        const joystickDirection = joystick.getDirection();
-        if (ground && hitBox) {
-            tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
+            const joystickDirection = joystick.getDirection();
+            if (ground && hitBox) {
+                tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
+            }
+        }
+
+        if (!store.get('showMapViewer')) {
+            camera.rotation.order = 'YXZ';
+            let degrees = -THREE.MathUtils.radToDeg(camera.rotation.y);
+            degrees = (degrees + 360) % 360; // 0〜360度の範囲に調整
+
+            setCameraMarker(degrees);
         }
     }
 
@@ -312,7 +322,7 @@ export const setPotison = (x: number, z: number) => {
     const joystickDirection = joystick.getDirection();
     tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
     const angle = tpsControls.getModelRotationAngle();
-    setMarker(x, z, angle);
+    setPlayerMarker(x, z, angle);
 };
 
 // カメラの近距離と遠距離の設定

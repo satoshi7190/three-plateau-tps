@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
-import { setMarker } from '../map';
+import { setPlayerMarker } from '../map';
 
 const wallRay = new THREE.Raycaster();
 const groundRay = new THREE.Raycaster();
@@ -185,10 +185,10 @@ export class TPSControls {
 
             // モデルの現在の回転角度を取得してマーカーを設定
             const currentAngle = this.getModelRotationAngle();
-            setMarker(this.model.position.x, this.model.position.z, currentAngle);
+            setPlayerMarker(this.model.position.x, this.model.position.z, currentAngle);
         } else {
             const currentAngle = this.getModelRotationAngle();
-            setMarker(this.model.position.x, this.model.position.z, currentAngle);
+            setPlayerMarker(this.model.position.x, this.model.position.z, currentAngle);
         }
     }
 
