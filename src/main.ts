@@ -8,6 +8,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { JoystickControl } from './ui/joystickControl';
 import { TPSControls } from './ui/tpsControls';
+import { GUI } from 'lil-gui';
 
 import { SCENE_CENTER_COORDS, INITIAL_LNG_LAT, INITIAL_MODEL_ROTATION } from './constants';
 import { map, setPlayerMarker, setCameraMarker } from './map';
@@ -22,6 +23,27 @@ import { lineMaterial, bldgbridMaterial, characterMaterial, hitBoxMaterial, ubld
 import { store } from './store';
 import { ElementManager } from './ui/element';
 import { checkLocalStorage } from './localStorage';
+
+// NOTE: debug
+if (import.meta.env.DEV) {
+    const gui = new GUI();
+
+    Object.entries(uniforms).forEach(([key, uniform]) => {
+        if (uniform.value instanceof THREE.Vector3) {
+            // Vector3は直接 `gui.add()` できないので、`addFolder()` を使う
+            const folder = gui.addFolder(key);
+            folder.add(uniform.value, 'x', -1000, 1000).name(`${key}.x`).listen();
+            folder.add(uniform.value, 'y', -1000, 1000).name(`${key}.y`).listen();
+            folder.add(uniform.value, 'z', -1000, 1000).name(`${key}.z`).listen();
+        } else if (typeof uniform.value === 'boolean') {
+            // ブール値はチェックボックスにする
+            gui.add(uniform, 'value').name(key).listen();
+        } else {
+            // それ以外はそのまま `gui.add()`
+            gui.add(uniform, 'value').name(key).listen();
+        }
+    });
+}
 
 loadingStart();
 
@@ -302,6 +324,9 @@ const animate = () => {
     renderer.render(scene, camera);
 
     uniforms.u_time.value = clock.getElapsedTime();
+    if (tpsControls) {
+        uniforms.u_playerPosition.value = tpsControls.getPosition();
+    }
 };
 animate();
 
