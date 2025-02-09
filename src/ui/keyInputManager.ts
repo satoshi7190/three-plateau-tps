@@ -55,6 +55,11 @@ export class KeyInputManager {
                 if (store.get('isFarView')) return;
                 store.set('showMapViewer', !store.get('showMapViewer'));
                 break;
+
+            case 'e':
+                if (store.get('showMapViewer') || store.get('isCameraAnimating')) return;
+                store.set('isFarView', !store.get('isFarView'));
+                break;
             case 'Escape':
                 store.set('showMapViewer', false);
                 store.set('isFarView', false);
