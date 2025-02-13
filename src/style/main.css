@@ -74,7 +74,7 @@ a:visited {
     height: 100px;
     border: 10px solid #333;
     border-radius: 50%;
-    border-top-color: #24fff4;
+    border-top-color: var(--primary-color);
     transform-origin: center;
     animation: spin 1s linear infinite;
 }
@@ -125,8 +125,8 @@ a:visited {
     font-weight: bold;
 }
 .key-control > .active {
-    background-color: #24fff4;
-    filter: drop-shadow(0 0 5px #24fff4);
+    background-color: var(--primary-color);
+    filter: drop-shadow(0 0 5px var(--primary-color));
 }
 .key-control.hidden {
     translate: -100px 0;
@@ -181,18 +181,18 @@ a:visited {
 }
 
 #operation-guide > .left svg > #left {
-    fill: #24fff4;
+    fill: var(--primary-color);
 }
 
 #operation-guide > .right svg > #right {
-    fill: #24fff4;
+    fill: var(--primary-color);
 }
 #operation-guide > .left svg > #center,
 #operation-guide > .right svg > #center {
     fill: #2b2b2b;
 }
 #operation-guide > .center svg > #center {
-    fill: #24fff4;
+    fill: var(--primary-color);
 }
 
 #operation-guide.player-view > .right {
@@ -219,7 +219,7 @@ a:visited {
     overflow: hidden;
     cursor: pointer;
     transition: scale 0.3s;
-    filter: drop-shadow(0 0 5px #24fff4);
+    filter: drop-shadow(0 0 5px var(--primary-color));
 }
 #map-container:is(.active) {
     top: 0;
@@ -386,7 +386,7 @@ a:visited {
 }
 
 #layer-menu > label:has(input[type='checkbox']:checked) > div {
-    background-color: #24fff4;
+    background-color: var(--primary-color);
 }
 
 #layer-menu > label > input[type='checkbox'] {
@@ -435,7 +435,7 @@ a:visited {
 
 @media (hover: hover) and (pointer: fine) {
     #menu-bar > button:hover {
-        background-color: #24fff4;
+        background-color: var(--primary-color);
     }
 }
 
@@ -473,10 +473,10 @@ body:has(#map-container.active) .maplibregl-ctrl-bottom-right {
 .player-marker > svg {
     transform-origin: center;
     scale: 0.5;
-    filter: drop-shadow(0 0 5px #24fff4);
+    filter: drop-shadow(0 0 5px var(--primary-color));
 }
 .player-marker > svg > path {
-    fill: #24fff4;
+    fill: var(--primary-color);
 }
 
 /* カメラ角度マーカー */
@@ -492,7 +492,7 @@ body:has(#map-container.active) .maplibregl-ctrl-bottom-right {
     rotate: 45deg;
     opacity: 0.6;
     background: rgb(255, 255, 255);
-    background: linear-gradient(315deg, rgb(234, 255, 0) 0%, rgba(205, 223, 2, 0) 65%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(315deg, var(--primary-color) 0%, rgba(205, 223, 2, 0) 65%, rgba(0, 0, 0, 0) 100%);
     border-top-left-radius: 80px;
 }
 
@@ -523,11 +523,16 @@ body:has(#map-container.active) .maplibregl-ctrl-bottom-right {
 }
 
 .popup-button {
-    background-color: #24fff4;
+    background-color: var(--secondary-color);
     color: #ffffff;
     border: none;
     padding: 0.5rem;
     border-radius: 5px;
     cursor: pointer;
     outline: none;
+    transition: background-color 0.3s;
+}
+
+.popup-button:hover {
+    background-color: var(--primary-color);
 }
