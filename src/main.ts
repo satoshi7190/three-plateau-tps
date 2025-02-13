@@ -398,7 +398,7 @@ const toggleView = (val: boolean) => {
         },
     });
 
-    // `camera.fov` のスムーズなアニメーション
+    // `camera.fov`
     const fovAnim = gsap.to(camera, {
         fov: val ? 45 : 75, // 目標視野角
         duration: 1.0,
@@ -408,7 +408,7 @@ const toggleView = (val: boolean) => {
         },
     });
 
-    // `camera.far` のスムーズなアニメーション
+    // `camera.far`
     const farAnim = gsap.to(camera, {
         far: val ? 5000 : 500,
         duration: 1.0,
