@@ -13,7 +13,6 @@
         border-radius: 10px;
         top: 10px;
         left: 10px;
-        transition: none;
     }
 
     #operation-guide {
@@ -75,6 +74,10 @@
 
     #menu-bar > #help-button {
         display: none;
+    }
+
+    #menu-bar > #fullscreen-button {
+        display: block;
     }
 }
 
