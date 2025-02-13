@@ -8,7 +8,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { JoystickControl } from './ui/joystickControl';
 import { TPSControls } from './ui/tpsControls';
-import { GUI } from 'lil-gui';
+// import { GUI } from 'lil-gui';
 
 import { SCENE_CENTER_COORDS, INITIAL_LNG_LAT, INITIAL_MODEL_ROTATION } from './constants';
 import { map, setPlayerMarker, setCameraMarker } from './map';
@@ -301,8 +301,8 @@ const animate = () => {
             const characterPosition = tpsControls.getPosition();
             const rayPosition = characterPosition.clone();
             rayPosition.y += 1.5;
-            const hitBox = objs.HitBox;
-            const ground = objs.FloorSurface;
+            const hitBox = objs.HitBox as THREE.Mesh;
+            const ground = objs.FloorSurface as THREE.Mesh;
 
             const joystickDirection = joystick.getDirection();
             if (ground && hitBox) {
@@ -331,8 +331,8 @@ const animate = () => {
 animate();
 
 export const setPotison = (x: number, z: number) => {
-    const ground = objs.FloorSurface;
-    const hitBox = objs.HitBox;
+    const ground = objs.FloorSurface as THREE.Mesh;
+    const hitBox = objs.HitBox as THREE.Mesh;
     // レイキャストの設定
     raycaster.set(new THREE.Vector3(x, 100, z), downDirection);
     const intersects = raycaster.intersectObject(ground, true);
