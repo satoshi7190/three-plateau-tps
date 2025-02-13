@@ -6,6 +6,8 @@ import ubldIntBuildingInstallationVS from './shader/underGround/vertex.glsl?raw'
 import ubldIntBuildingInstallationFS from './shader/underGround/fragment.glsl?raw';
 import ubldWallCeilingVS from './shader/ubldWallCeiling/vertex.glsl?raw';
 import ubldWallCeilingFS from './shader/ubldWallCeiling/fragment.glsl?raw';
+import ubldFloorVS from './shader/ubldFloor/vertex.glsl?raw';
+import ubldFloorFS from './shader/ubldFloor/fragment.glsl?raw';
 import bldgbridVS from './shader/bldgbrid/vertex.glsl?raw';
 import bldgbridFS from './shader/bldgbrid/fragment.glsl?raw';
 import vertexLineShader from './shader/line/vertex.glsl?raw';
@@ -32,10 +34,11 @@ export const ubldWallCeilingMaterial = new THREE.ShaderMaterial({
 });
 
 // 地下街モデルの床のマテリアル
-export const ubldfloorMaterial = new THREE.MeshBasicMaterial({
+export const ubldfloorMaterial = new THREE.ShaderMaterial({
     transparent: true,
-    color: new THREE.Color('rgb(0, 17, 23)'),
-    opacity: 0.7,
+    vertexShader: ubldFloorVS,
+    fragmentShader: ubldFloorFS,
+    glslVersion: THREE.GLSL3,
     side: THREE.DoubleSide,
 });
 

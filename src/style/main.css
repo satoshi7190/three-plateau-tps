@@ -145,7 +145,6 @@ a:visited {
     pointer-events: none;
     display: flex;
     flex-direction: column;
-    /* place-items: end; */
     background-color: #2b2b2b;
     border-radius: 10px;
     gap: 10px;
@@ -324,6 +323,73 @@ a:visited {
     cursor: pointer;
 }
 #map-close-button.hidden {
+    display: none;
+}
+
+#layer-menu {
+    position: absolute;
+    z-index: 10;
+    top: 20px;
+    right: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #2b2b2b;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 15px;
+    transition: translate 0.3s, opacity 0.3s;
+}
+
+#layer-menu.hidden {
+    translate: 100px 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#layer-menu > label {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 2px 0;
+    cursor: pointer;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+#layer-menu > label > span {
+    user-select: none;
+}
+
+#layer-menu > label > div {
+    position: relative;
+    display: flex;
+    height: 30px;
+    width: 60px;
+    align-items: center;
+    border-radius: 9999px;
+    background-color: #828282;
+    transition: background-color 0.3s;
+}
+
+#layer-menu > label > div > div {
+    margin-left: 5px;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    transition: transform 0.3s;
+}
+
+#layer-menu > label:has(input[type='checkbox']:checked) > div > div {
+    transform: translateX(30px);
+}
+
+#layer-menu > label:has(input[type='checkbox']:checked) > div {
+    background-color: #24fff4;
+}
+
+#layer-menu > label > input[type='checkbox'] {
     display: none;
 }
 

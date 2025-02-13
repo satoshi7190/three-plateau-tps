@@ -129,6 +129,10 @@
         display: none;
     }
 
+    #menu-bar > #layer-button {
+        display: none;
+    }
+
     #attribute .wrap {
         animation: loop-slide 20s infinite linear, text-feed 20s infinite;
         justify-content: center;

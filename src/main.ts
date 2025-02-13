@@ -25,25 +25,22 @@ import { ElementManager } from './ui/element';
 import { checkLocalStorage } from './localStorage';
 
 // NOTE: debug
-if (import.meta.env.DEV) {
-    const gui = new GUI();
+// if (import.meta.env.DEV) {
+//     const gui = new GUI();
 
-    Object.entries(uniforms).forEach(([key, uniform]) => {
-        if (uniform.value instanceof THREE.Vector3) {
-            // Vector3は直接 `gui.add()` できないので、`addFolder()` を使う
-            const folder = gui.addFolder(key);
-            folder.add(uniform.value, 'x', -1000, 1000).name(`${key}.x`).listen();
-            folder.add(uniform.value, 'y', -1000, 1000).name(`${key}.y`).listen();
-            folder.add(uniform.value, 'z', -1000, 1000).name(`${key}.z`).listen();
-        } else if (typeof uniform.value === 'boolean') {
-            // ブール値はチェックボックスにする
-            gui.add(uniform, 'value').name(key).listen();
-        } else {
-            // それ以外はそのまま `gui.add()`
-            gui.add(uniform, 'value').name(key).listen();
-        }
-    });
-}
+//     Object.entries(uniforms).forEach(([key, uniform]) => {
+//         if (uniform.value instanceof THREE.Vector3) {
+//             const folder = gui.addFolder(key);
+//             folder.add(uniform.value, 'x', -1000, 1000).name(`${key}.x`).listen();
+//             folder.add(uniform.value, 'y', -1000, 1000).name(`${key}.y`).listen();
+//             folder.add(uniform.value, 'z', -1000, 1000).name(`${key}.z`).listen();
+//         } else if (typeof uniform.value === 'boolean') {
+//             gui.add(uniform, 'value').name(key).listen();
+//         } else {
+//             gui.add(uniform, 'value').name(key).listen();
+//         }
+//     });
+// }
 
 loadingStart();
 
@@ -54,6 +51,8 @@ const elManager = ElementManager.getInstance({
     mapCloseButton: '#map-close-button',
     viewButton: '#view-button',
     helpButton: '#help-button',
+    layerButton: '#layer-button',
+    layerMenu: '#layer-menu',
     githubButton: '#github-button',
     keyControl: '#key-control',
     joystickControl: '#joystick-control',
@@ -149,7 +148,7 @@ window.addEventListener('resize', onResize);
 
 // オブジェクトを読み込み
 const objs: {
-    [key: string]: THREE.Mesh;
+    [key: string]: THREE.Mesh | THREE.LineSegments;
 } = {};
 
 const lineLoader = new FGB2DLineLoader(SCENE_CENTER_COORDS);
@@ -157,6 +156,7 @@ const addLineObj = async (url: string, name: string, option: FGB2DLineOption) =>
     lineLoader.load(url, option).then((geometry: THREE.BufferGeometry) => {
         const road = new THREE.LineSegments(geometry, lineMaterial);
         road.name = name;
+        objs[name] = road;
         scene.add(road);
     });
 };
@@ -435,7 +435,10 @@ const toggleView = (val: boolean) => {
 
 let popup: maplibregl.Popup;
 
-// ボタンクリックでビュー切り替え
+elManager.get('layerButton')?.addEventListener('click', () => {
+    store.set('showLayerMenu', !store.get('showLayerMenu'));
+});
+
 elManager.get('viewButton')?.addEventListener('click', () => {
     if (store.get('isCameraAnimating')) return;
     store.set('isFarView', !store.get('isFarView'));
@@ -464,6 +467,77 @@ elManager.get('guideCloseButton')?.addEventListener('click', () => {
 elManager.get('fullscreenButton')?.addEventListener('click', () => {
     store.set('isFullScreen', !store.get('isFullScreen'));
 });
+
+const layerMenu = elManager.get('layerMenu');
+if (layerMenu) {
+    const buttonList = [
+        {
+            label: 'Line Effect',
+            visible: true,
+            objs: ['road', 'link', 'RailCL'],
+        },
+        {
+            label: 'Building',
+            visible: true,
+            objs: ['53394525_Building', '53394535_Building', '53394526_Building', '53394536_Building'],
+        },
+        {
+            label: 'Bridge',
+            visible: true,
+            objs: ['53394525_Bridge', '53394526_Bridge', '53394535_Bridge'],
+        },
+        {
+            label: 'Ceiling',
+            visible: true,
+            objs: ['RoofSurface'],
+        },
+        {
+            label: 'Floor',
+            visible: true,
+            objs: ['FloorSurface'],
+        },
+        {
+            label: 'Wall',
+            visible: true,
+            objs: ['ClosureSurface', 'InteriorWallSurface', 'Window', 'Door'],
+        },
+        {
+            label: 'Stairs and Columns',
+            visible: true,
+            objs: ['IntBuildingInstallation'],
+        },
+        {
+            label: 'Floor',
+            visible: true,
+            objs: ['FloorSurface'],
+        },
+    ];
+
+    buttonList.forEach((button) => {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        const span = document.createElement('span');
+        const div = document.createElement('div');
+        const divChild = document.createElement('div');
+        input.type = 'checkbox';
+        input.checked = button.visible;
+        input.addEventListener('change', () => {
+            button.objs.forEach((obj) => {
+                const target = objs[obj];
+                if (target) {
+                    target.visible = input.checked;
+                }
+            });
+        });
+        span.textContent = button.label;
+
+        label.appendChild(span);
+        label.appendChild(input);
+        div.appendChild(divChild);
+        label.appendChild(div);
+        layerMenu.appendChild(label);
+    });
+}
 
 // カメラの切り替え
 store.subscribe('isFarView', (value) => {
@@ -535,6 +609,14 @@ map.on('click', 'FloorSurface', (e) => {
         popup.remove();
         store.set('showMapViewer', false);
     };
+});
+
+store.subscribe('showLayerMenu', (value) => {
+    if (value) {
+        elManager.get('layerMenu')?.classList.remove('hidden');
+    } else {
+        elManager.get('layerMenu')?.classList.add('hidden');
+    }
 });
 
 map.on('mouseover', 'FloorSurface', () => {
