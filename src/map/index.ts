@@ -151,8 +151,14 @@ const nav = new maplibregl.NavigationControl({
 });
 map.addControl(nav, 'top-left');
 
-let marker: maplibregl.Marker;
-let markerDiv: HTMLDivElement;
+let playerMarkerDiv: HTMLDivElement;
+let playerMarker: maplibregl.Marker;
+let cameraAngleMaker: maplibregl.Marker;
+
+const cameraMarkerDiv = document.createElement('div');
+const divChild = document.createElement('div');
+divChild.className = 'camera-angle';
+cameraMarkerDiv.appendChild(divChild);
 
 fetch('./location.svg')
     .then((res) => res.text()) // SVGを文字列として取得
@@ -160,24 +166,42 @@ fetch('./location.svg')
         const div = document.createElement('div'); // コンテナ要素を作成
         div.className = 'location'; // クラス名を設定
         div.innerHTML = svgText; // SVGデータを挿入
-        markerDiv = div;
+        playerMarkerDiv = div;
     })
     .catch((error) => {
         console.error('Failed to fetch SVG:', error);
     });
 
-export const setMarker = (x: number, z: number, angle: number) => {
+//  カメラ
+export const setCameraMarker = (angle: number) => {
+    // 既存のマーカーを削除または再利用
+    if (cameraAngleMaker) {
+        cameraAngleMaker.setLngLat(map.getCenter()).setRotation(angle); // マーカーの位置を更新
+    } else {
+        cameraAngleMaker = new maplibregl.Marker({
+            element: cameraMarkerDiv,
+            className: 'camera-angle-marker',
+        })
+            .setLngLat(map.getCenter())
+            .addTo(map)
+            .setRotation(angle);
+    }
+
+    // マップを新しい位置に移動
+};
+
+// プレイヤー
+export const setPlayerMarker = (x: number, z: number, angle: number) => {
     const lonlat = worldPotisonToMapPotison(x, z);
 
-    markerDiv.style.transform = `rotate(${angle}deg)`;
-
     // 既存のマーカーを削除または再利用
-    if (marker) {
-        marker.setLngLat(lonlat).setRotation(angle); // マーカーの位置を更新
+    if (playerMarker) {
+        playerMarker.setLngLat(lonlat).setRotation(angle); // マーカーの位置を更新
     } else {
         // 新しいマーカーを作成
-        marker = new maplibregl.Marker({
-            element: markerDiv,
+        playerMarker = new maplibregl.Marker({
+            element: playerMarkerDiv,
+            className: 'player-marker',
         })
             .setLngLat(lonlat)
             .addTo(map)
@@ -197,9 +221,12 @@ store.subscribe('showMapViewer', (value) => {
     if (value) {
         currentCenter = map.getCenter();
         map.setPaintProperty('background', 'background-opacity', 1.0);
-        // map.attributionControl = true;
+
+        divChild.classList.add('hidden');
     } else {
         map.setPaintProperty('background', 'background-opacity', 0.5);
+
         map.easeTo({ center: currentCenter, duration: 0 });
+        divChild.classList.remove('hidden');
     }
 });

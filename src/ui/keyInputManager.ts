@@ -37,6 +37,7 @@ export class KeyInputManager {
         this.keyState[key] = true;
         this.setKeyActive(key, true);
         this.handleSpecialKeys(e.key);
+        if (key !== 'r') store.set('showLayerMenu', false);
     }
 
     // キー解放時の処理
@@ -55,9 +56,17 @@ export class KeyInputManager {
                 if (store.get('isFarView')) return;
                 store.set('showMapViewer', !store.get('showMapViewer'));
                 break;
+            case 'e':
+                if (store.get('showMapViewer') || store.get('isCameraAnimating')) return;
+                store.set('isFarView', !store.get('isFarView'));
+                break;
+            case 'r':
+                store.set('showLayerMenu', !store.get('showLayerMenu'));
+                break;
             case 'Escape':
                 store.set('showMapViewer', false);
                 store.set('isFarView', false);
+                store.set('showLayerMenu', false);
                 break;
         }
     }

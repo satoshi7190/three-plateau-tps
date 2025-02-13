@@ -74,7 +74,7 @@ a:visited {
     height: 100px;
     border: 10px solid #333;
     border-radius: 50%;
-    border-top-color: #24fff4;
+    border-top-color: var(--primary-color);
     transform-origin: center;
     animation: spin 1s linear infinite;
 }
@@ -125,8 +125,8 @@ a:visited {
     font-weight: bold;
 }
 .key-control > .active {
-    background-color: #24fff4;
-    filter: drop-shadow(0 0 5px #24fff4);
+    background-color: var(--primary-color);
+    filter: drop-shadow(0 0 5px var(--primary-color));
 }
 .key-control.hidden {
     translate: -100px 0;
@@ -145,7 +145,6 @@ a:visited {
     pointer-events: none;
     display: flex;
     flex-direction: column;
-    /* place-items: end; */
     background-color: #2b2b2b;
     border-radius: 10px;
     gap: 10px;
@@ -182,18 +181,18 @@ a:visited {
 }
 
 #operation-guide > .left svg > #left {
-    fill: #24fff4;
+    fill: var(--primary-color);
 }
 
 #operation-guide > .right svg > #right {
-    fill: #24fff4;
+    fill: var(--primary-color);
 }
 #operation-guide > .left svg > #center,
 #operation-guide > .right svg > #center {
     fill: #2b2b2b;
 }
 #operation-guide > .center svg > #center {
-    fill: #24fff4;
+    fill: var(--primary-color);
 }
 
 #operation-guide.player-view > .right {
@@ -220,7 +219,10 @@ a:visited {
     overflow: hidden;
     cursor: pointer;
     transition: scale 0.3s;
-    filter: drop-shadow(0 0 5px #24fff4);
+    transition: all 0.3s;
+    display: grid;
+    place-items: center;
+    filter: drop-shadow(0 0 5px var(--primary-color));
 }
 #map-container:is(.active) {
     top: 0;
@@ -238,17 +240,13 @@ a:visited {
     width: 100%;
     height: 100%;
     pointer-events: none;
+    transition: all 0.3s;
 }
 #map-container.active {
     z-index: 100;
     width: 100%;
     height: 100%;
-    border-radius: 10px;
-    animation: map-slide 0.3s;
-    display: grid;
-    place-items: center;
     background-color: #00000098;
-    transition: none;
 }
 
 #map-container.active #map {
@@ -269,17 +267,6 @@ a:visited {
 }
 
 @keyframes map-open {
-    from {
-        transform: translate(0, 100px);
-        opacity: 0;
-    }
-    to {
-        transform: translate(0, 0);
-        opacity: 1;
-    }
-}
-
-@keyframes map-c {
     from {
         transform: translate(0, 100px);
         opacity: 0;
@@ -327,6 +314,73 @@ a:visited {
     display: none;
 }
 
+#layer-menu {
+    position: absolute;
+    z-index: 10;
+    top: 20px;
+    right: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #2b2b2b;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 15px;
+    transition: translate 0.3s, opacity 0.3s;
+}
+
+#layer-menu.hidden {
+    translate: 100px 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#layer-menu > label {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 2px 0;
+    cursor: pointer;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+#layer-menu > label > span {
+    user-select: none;
+}
+
+#layer-menu > label > div {
+    position: relative;
+    display: flex;
+    height: 30px;
+    width: 60px;
+    align-items: center;
+    border-radius: 9999px;
+    background-color: #828282;
+    transition: background-color 0.3s;
+}
+
+#layer-menu > label > div > div {
+    margin-left: 5px;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    transition: transform 0.3s;
+}
+
+#layer-menu > label:has(input[type='checkbox']:checked) > div > div {
+    transform: translateX(30px);
+}
+
+#layer-menu > label:has(input[type='checkbox']:checked) > div {
+    background-color: var(--primary-color);
+}
+
+#layer-menu > label > input[type='checkbox'] {
+    display: none;
+}
+
 /* メニューバー */
 #menu-bar {
     position: absolute;
@@ -367,9 +421,13 @@ a:visited {
     height: 32px;
 }
 
+#menu-bar > #fullscreen-button {
+    display: none;
+}
+
 @media (hover: hover) and (pointer: fine) {
     #menu-bar > button:hover {
-        background-color: #24fff4;
+        background-color: var(--primary-color);
     }
 }
 
@@ -401,13 +459,37 @@ body:has(#map-container.active) .maplibregl-ctrl-bottom-right {
 }
 
 /* 現在地マーカー*/
-.maplibregl-marker > svg {
+.player-marker {
+    z-index: 10;
+}
+.player-marker > svg {
     transform-origin: center;
     scale: 0.5;
-    filter: drop-shadow(0 0 5px #24fff4);
+    filter: drop-shadow(0 0 5px var(--primary-color));
 }
-.maplibregl-marker > svg > path {
-    fill: #24fff4;
+.player-marker > svg > path {
+    fill: var(--primary-color);
+}
+
+/* カメラ角度マーカー */
+.camera-angle-marker {
+    width: 160px;
+    height: 160px;
+}
+
+.camera-angle-marker > .camera-angle {
+    width: 80px;
+    height: 80px;
+    transform-origin: bottom right;
+    rotate: 45deg;
+    opacity: 0.6;
+    background: rgb(255, 255, 255);
+    background: linear-gradient(315deg, var(--primary-color) 0%, rgba(205, 223, 2, 0) 65%, rgba(0, 0, 0, 0) 100%);
+    border-top-left-radius: 80px;
+}
+
+.camera-angle-marker > .camera-angle.hidden {
+    display: none;
 }
 
 /* ポップアップ */
@@ -433,11 +515,16 @@ body:has(#map-container.active) .maplibregl-ctrl-bottom-right {
 }
 
 .popup-button {
-    background-color: #24fff4;
+    background-color: var(--secondary-color);
     color: #ffffff;
     border: none;
     padding: 0.5rem;
     border-radius: 5px;
     cursor: pointer;
     outline: none;
+    transition: background-color 0.3s;
+}
+
+.popup-button:hover {
+    background-color: var(--primary-color);
 }

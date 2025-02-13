@@ -2,6 +2,7 @@
 type AppStates = {
     showMapViewer: boolean;
     showOperationGuide: boolean;
+    showLayerMenu: boolean;
     isFarView: boolean;
     isModelAnimation: 'idle' | 'run';
     isCameraAnimating: boolean;
@@ -12,6 +13,7 @@ type AppStates = {
 const State: AppStates = {
     showMapViewer: false,
     showOperationGuide: false,
+    showLayerMenu: false,
     isFarView: false,
     isModelAnimation: 'idle',
     isCameraAnimating: false,

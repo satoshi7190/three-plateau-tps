@@ -8,9 +8,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { JoystickControl } from './ui/joystickControl';
 import { TPSControls } from './ui/tpsControls';
+import { GUI } from 'lil-gui';
 
 import { SCENE_CENTER_COORDS, INITIAL_LNG_LAT, INITIAL_MODEL_ROTATION } from './constants';
-import { map, setMarker } from './map';
+import { map, setPlayerMarker, setCameraMarker } from './map';
 import { FGB3DLoader } from './world/plateauGeometryLoader';
 import { FGB2DLineLoader } from './world/lineGeometryLoader';
 import type { FGB2DLineOption } from './world/lineGeometryLoader';
@@ -23,6 +24,24 @@ import { store } from './store';
 import { ElementManager } from './ui/element';
 import { checkLocalStorage } from './localStorage';
 
+// NOTE: debug
+// if (import.meta.env.DEV) {
+//     const gui = new GUI();
+
+//     Object.entries(uniforms).forEach(([key, uniform]) => {
+//         if (uniform.value instanceof THREE.Vector3) {
+//             const folder = gui.addFolder(key);
+//             folder.add(uniform.value, 'x', -1000, 1000).name(`${key}.x`).listen();
+//             folder.add(uniform.value, 'y', -1000, 1000).name(`${key}.y`).listen();
+//             folder.add(uniform.value, 'z', -1000, 1000).name(`${key}.z`).listen();
+//         } else if (typeof uniform.value === 'boolean') {
+//             gui.add(uniform, 'value').name(key).listen();
+//         } else {
+//             gui.add(uniform, 'value').name(key).listen();
+//         }
+//     });
+// }
+
 loadingStart();
 
 // 要素
@@ -32,6 +51,8 @@ const elManager = ElementManager.getInstance({
     mapCloseButton: '#map-close-button',
     viewButton: '#view-button',
     helpButton: '#help-button',
+    layerButton: '#layer-button',
+    layerMenu: '#layer-menu',
     githubButton: '#github-button',
     keyControl: '#key-control',
     joystickControl: '#joystick-control',
@@ -49,7 +70,7 @@ const raycastObjectNames: IsRaycastObjectName[] = ['FloorSurface', 'HitBox'];
 const scene = new THREE.Scene();
 
 // カメラ
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500);
 camera.position.set(18, 9, 3);
 camera.zoom = 0.5;
 scene.add(camera);
@@ -127,7 +148,7 @@ window.addEventListener('resize', onResize);
 
 // オブジェクトを読み込み
 const objs: {
-    [key: string]: THREE.Mesh;
+    [key: string]: THREE.Mesh | THREE.LineSegments;
 } = {};
 
 const lineLoader = new FGB2DLineLoader(SCENE_CENTER_COORDS);
@@ -135,6 +156,7 @@ const addLineObj = async (url: string, name: string, option: FGB2DLineOption) =>
     lineLoader.load(url, option).then((geometry: THREE.BufferGeometry) => {
         const road = new THREE.LineSegments(geometry, lineMaterial);
         road.name = name;
+        objs[name] = road;
         scene.add(road);
     });
 };
@@ -274,16 +296,26 @@ const animate = () => {
     zoomControls.target.set(target.x, target.y, target.z);
 
     let mixerUpdateDelta = clock.getDelta();
-    if (tpsControls && !store.get('isFarView') && !store.get('showMapViewer')) {
-        const characterPosition = tpsControls.getPosition();
-        const rayPosition = characterPosition.clone();
-        rayPosition.y += 1.5;
-        const hitBox = objs.HitBox;
-        const ground = objs.FloorSurface;
+    if (tpsControls) {
+        if (!store.get('isFarView') && !store.get('showMapViewer')) {
+            const characterPosition = tpsControls.getPosition();
+            const rayPosition = characterPosition.clone();
+            rayPosition.y += 1.5;
+            const hitBox = objs.HitBox;
+            const ground = objs.FloorSurface;
 
-        const joystickDirection = joystick.getDirection();
-        if (ground && hitBox) {
-            tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
+            const joystickDirection = joystick.getDirection();
+            if (ground && hitBox) {
+                tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
+            }
+        }
+
+        if (!store.get('showMapViewer')) {
+            camera.rotation.order = 'YXZ';
+            let degrees = -THREE.MathUtils.radToDeg(camera.rotation.y);
+            degrees = (degrees + 360) % 360; // 0〜360度の範囲に調整
+
+            setCameraMarker(degrees);
         }
     }
 
@@ -292,6 +324,9 @@ const animate = () => {
     renderer.render(scene, camera);
 
     uniforms.u_time.value = clock.getElapsedTime();
+    if (tpsControls) {
+        uniforms.u_playerPosition.value = tpsControls.getPosition();
+    }
 };
 animate();
 
@@ -312,7 +347,7 @@ export const setPotison = (x: number, z: number) => {
     const joystickDirection = joystick.getDirection();
     tpsControls.update(mixerUpdateDelta, joystickDirection, ground, hitBox);
     const angle = tpsControls.getModelRotationAngle();
-    setMarker(x, z, angle);
+    setPlayerMarker(x, z, angle);
 };
 
 // カメラの近距離と遠距離の設定
@@ -363,13 +398,23 @@ const toggleView = (val: boolean) => {
         },
     });
 
-    // `camera.fov` のスムーズなアニメーション
+    // `camera.fov`
     const fovAnim = gsap.to(camera, {
         fov: val ? 45 : 75, // 目標視野角
         duration: 1.0,
         ease: 'power1',
         onUpdate: () => {
             camera.updateProjectionMatrix(); // 投影行列の更新が必須
+        },
+    });
+
+    // `camera.far`
+    const farAnim = gsap.to(camera, {
+        far: val ? 5000 : 500,
+        duration: 1.0,
+        ease: 'power1',
+        onUpdate: () => {
+            camera.updateProjectionMatrix();
         },
     });
 
@@ -384,12 +429,16 @@ const toggleView = (val: boolean) => {
     })
         .add(cameraPositionAnim)
         .add(targetAnim, '-=1.0')
-        .add(fovAnim, '-=1.0');
+        .add(fovAnim, '-=1.0')
+        .add(farAnim, '-=1.0');
 };
 
 let popup: maplibregl.Popup;
 
-// ボタンクリックでビュー切り替え
+elManager.get('layerButton')?.addEventListener('click', () => {
+    store.set('showLayerMenu', !store.get('showLayerMenu'));
+});
+
 elManager.get('viewButton')?.addEventListener('click', () => {
     if (store.get('isCameraAnimating')) return;
     store.set('isFarView', !store.get('isFarView'));
@@ -418,6 +467,77 @@ elManager.get('guideCloseButton')?.addEventListener('click', () => {
 elManager.get('fullscreenButton')?.addEventListener('click', () => {
     store.set('isFullScreen', !store.get('isFullScreen'));
 });
+
+const layerMenu = elManager.get('layerMenu');
+if (layerMenu) {
+    const buttonList = [
+        {
+            label: 'Line Effect',
+            visible: true,
+            objs: ['road', 'link', 'RailCL'],
+        },
+        {
+            label: 'Building',
+            visible: true,
+            objs: ['53394525_Building', '53394535_Building', '53394526_Building', '53394536_Building'],
+        },
+        {
+            label: 'Bridge',
+            visible: true,
+            objs: ['53394525_Bridge', '53394526_Bridge', '53394535_Bridge'],
+        },
+        {
+            label: 'Ceiling',
+            visible: true,
+            objs: ['RoofSurface'],
+        },
+        {
+            label: 'Floor',
+            visible: true,
+            objs: ['FloorSurface'],
+        },
+        {
+            label: 'Wall',
+            visible: true,
+            objs: ['ClosureSurface', 'InteriorWallSurface', 'Window', 'Door'],
+        },
+        {
+            label: 'Stairs and Columns',
+            visible: true,
+            objs: ['IntBuildingInstallation'],
+        },
+        {
+            label: 'Floor',
+            visible: true,
+            objs: ['FloorSurface'],
+        },
+    ];
+
+    buttonList.forEach((button) => {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        const span = document.createElement('span');
+        const div = document.createElement('div');
+        const divChild = document.createElement('div');
+        input.type = 'checkbox';
+        input.checked = button.visible;
+        input.addEventListener('change', () => {
+            button.objs.forEach((obj) => {
+                const target = objs[obj];
+                if (target) {
+                    target.visible = input.checked;
+                }
+            });
+        });
+        span.textContent = button.label;
+
+        label.appendChild(span);
+        label.appendChild(input);
+        div.appendChild(divChild);
+        label.appendChild(div);
+        layerMenu.appendChild(label);
+    });
+}
 
 // カメラの切り替え
 store.subscribe('isFarView', (value) => {
@@ -489,6 +609,14 @@ map.on('click', 'FloorSurface', (e) => {
         popup.remove();
         store.set('showMapViewer', false);
     };
+});
+
+store.subscribe('showLayerMenu', (value) => {
+    if (value) {
+        elManager.get('layerMenu')?.classList.remove('hidden');
+    } else {
+        elManager.get('layerMenu')?.classList.add('hidden');
+    }
 });
 
 map.on('mouseover', 'FloorSurface', () => {
